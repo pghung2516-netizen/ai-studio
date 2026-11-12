@@ -37,10 +37,10 @@ Người dùng có thể **nhấp đúp `CAI-DAT.bat`** ở thư mục gốc —
 | Timeout / DNS khi `uv sync` / tải mô hình | Kiểm tra kết nối; chỉ đề nghị đổi mạng khi log thật sự báo timeout, DNS hoặc không kết nối được. |
 | `kiem-tra` cảnh báo **OneDrive** | Khuyên người dùng chép cả thư mục sang `C:\TTomorrow-Studio` (OneDrive đồng bộ video nặng rất chậm, dễ lỗi). |
 | Đường dẫn quá dài / ký tự lạ | Khuyên đặt workspace ở `C:\TTomorrow-Studio` (ngắn, không dấu, không khoảng trắng). |
-| Ổ đĩa đầy | Gợi ý xóa bớt kết quả cũ trong `02-THANH-PHAM` (hỏi trước khi xóa). |
+| Ổ đĩa đầy | Chạy `studio don-dep` (chỉ báo cáo) → hỏi người dùng → `don-dep --xac-nhan` (chuyển dự án cũ vào Thùng rác). |
 | Phụ đề/xóa nền chậm lần đầu | Bình thường — đang tải mô hình. Các lần sau nhanh. |
 | Antivirus chặn `uv.exe`/`ffmpeg` | Nhờ người dùng bấm "Allow/Cho phép" trong cảnh báo Windows Security. |
 
 ## Cập nhật workspace (khi người quản lý báo có bản mới)
 - Nếu thư mục là git clone: `git pull` rồi `uv sync`.
-- Nếu tải bằng file ZIP: hướng dẫn người dùng tải ZIP mới, giải nén đè lên (giữ nguyên `01-DAU-VAO`, `02-THANH-PHAM`, `03-THUONG-HIEU`), rồi chạy `uv sync`.
+- Nếu tải bằng file ZIP: hướng dẫn người dùng tải ZIP mới, giải nén đè lên (giữ nguyên `01-DAU-VAO`, `02-DU-AN`, `02-THANH-PHAM`, `03-THUONG-HIEU`), rồi chạy `uv sync`.

@@ -16,7 +16,7 @@ Mời người dùng: GitHub → repo → Settings → Collaborators → Add peo
 CLAUDE.md                 Vai trò + quy tắc của Claude (luôn được nạp)
 BAT-DAU-O-DAY.md          Hướng dẫn người dùng cuối
 CAI-DAT.bat               Nhấp đúp để cài (gọi scripts/cai-dat.ps1)
-MO-THANH-PHAM.bat         Nhấp đúp để mở thư mục kết quả
+MO-DU-AN.bat              Nhấp đúp để mở thư mục dự án (02-DU-AN)
 studio/                   Bộ lệnh Python: uv run python -m studio <lệnh>
   common.py  video.py  image.py  subtitle.py  doctor.py  cli.py
 pyproject.toml, uv.lock   Thư viện (khóa phiên bản, có sẵn bản Windows)

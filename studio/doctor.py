@@ -9,7 +9,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .common import (CACHE, DAU_VAO, FONT_DAM, ROOT, THANH_PHAM, THUONG_HIEU, LoiNguoiDung, bao, ffmpeg_exe,
+from .common import (CACHE, DAU_VAO, DU_AN, FONT_DAM, ROOT, THANH_PHAM, THUONG_HIEU, LoiNguoiDung, bao, ffmpeg_exe,
                      ket_qua)
 
 
@@ -40,9 +40,9 @@ def lenh_kiem_tra(a) -> None:
         except Exception as e:  # noqa: BLE001
             tot &= _ok(False, ten, f"lỗi nạp thư viện: {e}")
     tot &= _ok(FONT_DAM.exists(), "Phông chữ tiếng Việt (Be Vietnam Pro)", "thiếu thư mục assets/fonts")
-    for d in (DAU_VAO, THANH_PHAM, THUONG_HIEU):
+    for d in (DAU_VAO, DU_AN, THUONG_HIEU):
         d.mkdir(exist_ok=True)
-    _ok(True, "Các thư mục 01-DAU-VAO, 02-THANH-PHAM, 03-THUONG-HIEU")
+    _ok(True, "Các thư mục 01-DAU-VAO (Hộp thư đến), 02-DU-AN, 03-THUONG-HIEU")
     whisper = any((CACHE / "huggingface").rglob("model.bin")) if (CACHE / "huggingface").exists() else False
     rembg = any((CACHE / "rembg").rglob("*.onnx")) if (CACHE / "rembg").exists() else False
     bao("✅ Mô hình nghe giọng nói đã tải sẵn" if whisper else "ℹ️  Mô hình nghe giọng nói chưa tải - sẽ tự tải ở lần làm phụ đề đầu tiên (~500MB)")

@@ -21,7 +21,7 @@ Mục tiêu: người dùng cuối (không biết IT) **không phải cài hay g
 ## Bước 3 — Tạo skill bọc công cụ
 - Dùng skill `skill-creator` để viết `.claude/skills/<ten-khong-dau>/SKILL.md`:
   - `description` nêu rõ **người dùng sẽ nói gì** để kích hoạt (tiếng Việt đời thường).
-  - Hướng dẫn Claude: kiểm tra công cụ đã sẵn sàng chưa → nếu chưa thì tự cài → chạy → lưu kết quả vào `02-THANH-PHAM/<ngày>/` → tự kiểm tra kết quả → báo người dùng.
+  - Hướng dẫn Claude: kiểm tra công cụ đã sẵn sàng chưa → nếu chưa thì tự cài → mở/tạo dự án (`studio du-an`) → hỏi ý (`hoi-y-tuong`) nếu là việc sáng tạo → chạy, xuất vào nháp `.cache/nhap/<dự án>/` → tự kiểm tra → `studio du-an chot` bản cuối vào `Thành phẩm/` → báo người dùng.
   - Ghi rõ lỗi thường gặp + cách xử lý.
 - Nếu công cụ có lệnh dòng lệnh: thêm quyền chạy vào `.claude/settings.json` (`allow`, cả dạng `Bash(...)` và `PowerShell(...)`), **chỉ** đúng lệnh cần thiết.
 

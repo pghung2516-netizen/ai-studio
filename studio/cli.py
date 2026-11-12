@@ -24,7 +24,7 @@ def _chu_opts(p: argparse.ArgumentParser, vi_tri_mac_dinh: str) -> None:
 
 
 def tao_parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(prog="studio", description="Bộ công cụ sửa video/ảnh. Kết quả luôn nằm trong 02-THANH-PHAM/<ngày>/")
+    ap = argparse.ArgumentParser(prog="studio", description="Bộ công cụ sửa video/ảnh. Thêm --du-an \"<dự án>\" để làm trong một dự án (nháp ở .cache/nhap, bản cuối chốt bằng du-an chot)")
     ap.add_argument("--du-an", metavar="<dự án>", help="dùng Gốc và thư mục bản nháp của dự án (có thể đặt sau lệnh)")
     sub = ap.add_subparsers(dest="lenh", metavar="<lệnh>")
 
@@ -81,7 +81,7 @@ def tao_parser() -> argparse.ArgumentParser:
     p.add_argument("--loai", default="tat-ca", choices=["tat-ca", "phu-de", "xoa-nen"])
     p.add_argument("--whisper", default="small", help="base | small | medium | large-v3")
     p = L("danh-sach", doctor.lenh_danh_sach, "Liệt kê file trong 01-DAU-VAO (mới nhất trước)")
-    p.add_argument("--thu-muc", help="thư mục khác, ví dụ 02-THANH-PHAM")
+    p.add_argument("--thu-muc", help="thư mục khác, ví dụ 02-DU-AN")
     p = L("thong-tin", video.lenh_thong_tin, "Xem thông tin video/ảnh/âm thanh (độ dài, kích thước...)")
     p.add_argument("file", help="file hoặc thư mục")
 
@@ -139,7 +139,7 @@ def tao_parser() -> argparse.ArgumentParser:
     p = L("khung-hinh", video.lenh_khung_hinh, "Trích khung hình + ảnh tổng hợp có mốc giờ (để xem nhanh nội dung)")
     p.add_argument("video")
     p.add_argument("--so", type=int, default=12, help="số khung hình (mặc định 12)")
-    p.add_argument("--kiem-tra", action="store_true", help="để Claude tự kiểm tra: lưu vào .cache, không vào 02-THANH-PHAM")
+    p.add_argument("--kiem-tra", action="store_true", help="để Claude tự kiểm tra: lưu vào .cache, không vào thư mục kết quả")
     p = L("gif", video.lenh_gif, "Cắt 1 đoạn video thành ảnh GIF")
     p.add_argument("video")
     p.add_argument("--tu")

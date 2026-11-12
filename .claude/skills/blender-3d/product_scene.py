@@ -186,7 +186,7 @@ def setup_turntable(product, seconds=6, fps=30, mp4_path=None):
 # clear_scene(); set_engine_eevee(32); studio_floor()
 # hop = product_box(image_path=r"C:\...\bao-bi.png")      # hoặc product_card(r"C:\...\sp-xoa-nen.png")
 # three_point_lights(); add_camera()
-# set_output(1080, 1920, r"C:\...\02-THANH-PHAM\2026-11-13\hop-qua-3d.png")
-# render_still(r"C:\...\02-THANH-PHAM\2026-11-13\hop-qua-3d.png")
+# set_output(1080, 1920, r"C:\...\.cache\nhap\<du-an>\hop-qua-3d.png")
+# render_still(r"C:\...\.cache\nhap\<du-an>\hop-qua-3d.png")  # roi: studio du-an chot
 # --- Xoay 360: setup_turntable(hop, 6, 30, r"C:\...\hop-xoay.mp4"); rồi lưu .blend bằng
 #     bpy.ops.wm.save_as_mainfile(filepath=r"C:\...\hop-xoay.blend") và render bằng dòng lệnh.
