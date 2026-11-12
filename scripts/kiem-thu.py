@@ -28,9 +28,15 @@ os.environ["PYTHONIOENCODING"] = "utf-8"
 GOC = ROOT / ".cache" / "kiem-thu"
 MAU = GOC / "Mẫu thử có dấu"          # đường dẫn khó: tiếng Việt + dấu cách
 KQ = GOC / "ket-qua"
+DU_AN_TEST = GOC / "du-an"
+NHAP_TEST = GOC / "nhap"
+DAU_VAO_TEST = GOC / "hop-thu"
 os.environ["STUDIO_THANH_PHAM"] = str(KQ)
+os.environ["STUDIO_DU_AN"] = str(DU_AN_TEST)
+os.environ["STUDIO_NHAP"] = str(NHAP_TEST)
+os.environ["STUDIO_DAU_VAO"] = str(DAU_VAO_TEST)
 
-from studio.common import bat_utf8, chay_ffmpeg, doc_thong_tin, ffmpeg_exe  # noqa: E402
+from studio.common import bat_utf8, chay_ffmpeg, doc_thong_tin, ffmpeg_exe, ten_an_toan  # noqa: E402
 
 bat_utf8()
 
@@ -96,6 +102,11 @@ def tao_mau() -> dict[str, Path]:
         pass
     if wav.exists() and wav.stat().st_size > 10000:
         m["giong"] = wav
+    DAU_VAO_TEST.mkdir(parents=True)
+    m["hop_thu"] = DAU_VAO_TEST / "video hộp thư.mp4"
+    shutil.copy2(m["video"], m["hop_thu"])
+    m["ngoai"] = MAU / "file bên ngoài.txt"
+    m["ngoai"].write_bytes(b"noi dung ben ngoai\x00giu nguyen")
     return m
 
 
@@ -157,6 +168,49 @@ def kt_file(*duoi):
 # ------------------------------------------------------------------ danh sách ca kiểm thử
 def danh_sach_ca(m: dict[str, Path]) -> list[tuple]:
     v, vd, s = str(m["video"]), str(m["video_doc"]), str
+
+    hop_thu_bytes = m["hop_thu"].read_bytes()
+
+    def kt_du_an_move(files: list[Path]) -> str | None:
+        moved = files[0] / "Gốc" / m["hop_thu"].name
+        if m["hop_thu"].exists():
+            return "file hộp thư bị sao chép thay vì di chuyển"
+        if not moved.exists() or moved.read_bytes() != hop_thu_bytes:
+            return "byte file gốc không còn nguyên vẹn"
+        return None
+
+    def kt_du_an_copy(files: list[Path]) -> str | None:
+        copied = files[0] / "Gốc" / m["ngoai"].name
+        if not m["ngoai"].exists():
+            return "file ngoài workspace đã bị di chuyển"
+        if not copied.exists() or copied.read_bytes() != m["ngoai"].read_bytes():
+            return "bản sao file ngoài không đúng"
+        return None
+
+    def kt_nhap_du_an(files: list[Path]) -> str | None:
+        project = next(DU_AN_TEST.glob("* Áo thun trắng"), None)
+        expected = NHAP_TEST / ten_an_toan(project.name) if project else None
+        return None if expected and files[0].parent == expected else f"kết quả không nằm trong thư mục nháp: {files[0]}"
+
+    def kt_chot(version: int):
+        def check(files: list[Path]) -> str | None:
+            expected = f"Áo thun trắng - quảng cáo - bản {version}"
+            return None if expected in files[0].name else f"tên thành phẩm sai: {files[0].name}"
+        return check
+
+    def kt_ghi(files: list[Path]) -> str | None:
+        text = files[0].read_text(encoding="utf-8")
+        return None if "Dòng ghi thử\nDòng thứ hai" in text else "nhật ký không giữ nội dung nhiều dòng"
+
+    def tao_file_moi() -> None:
+        DAU_VAO_TEST.mkdir(parents=True, exist_ok=True)
+        fresh = DAU_VAO_TEST / "ảnh vừa nhận.png"
+        shutil.copyfile(m["anh2"], fresh)
+        os.utime(fresh, None)
+
+    def kt_tim_file_moi(files: list[Path]) -> str | None:
+        return None if any(p.name == "ảnh vừa nhận.png" for p in files) else "không tìm thấy file mới trong hộp thư sandbox"
+
     ca = [
         # (tên, args, hàm kiểm tra | None, timeout, xem_mat)
         ("kiem-tra", ["kiem-tra"], None, 300, False),
@@ -197,6 +251,21 @@ def danh_sach_ca(m: dict[str, Path]) -> list[tuple]:
         ("doi-dinh-dang", ["doi-dinh-dang", s(m["anh2"]), "--sang", "jpg"], kt_anh(ext=".jpg"), 120, False),
         ("logo-anh", ["logo", s(m["anh"]), s(m["logo"])], None, 120, False),
         ("loi-file-khong-co (mong đợi mã 2)", ["cat", "khong-ton-tai.mp4", "--dai", "3"], "MA2", 60, False),
+        ("du-an-moi-lay-hop-thu", ["du-an", "moi", "Áo thun trắng", "--lay-hop-thu"], kt_du_an_move, 60, False),
+        ("du-an-moi-copy-ben-ngoai", ["du-an", "moi", "Áo thun đen", s(m["ngoai"])], kt_du_an_copy, 60, False),
+        ("cat-voi-du-an", ["cat", "video hop thu", "--tu", "0", "--den", "1", "--du-an", "ao thun trang"],
+         kt_nhap_du_an, 300, False),
+        ("du-an-chot-ban-1", ["du-an", "chot", "ao thun trang", "cat", "--ten", "quảng cáo"],
+         kt_chot(1), 60, False),
+        ("du-an-chot-ban-2", ["du-an", "chot", "ao thun trang", "cat", "--ten", "quảng cáo"],
+         kt_chot(2), 60, False),
+        ("du-an-ghi", ["du-an", "ghi", "ao thun trang", "Dòng ghi thử\nDòng thứ hai"], kt_ghi, 60, False),
+        ("du-an-xem", ["du-an", "xem", "ao thun trang"], None, 60, False),
+        ("du-an-ds", ["du-an", "ds"], None, 60, False),
+        ("tim-file-moi", ["tim-file-moi", "--loai", "anh", "--so", "100", "--gio", "168"],
+         kt_tim_file_moi, 60, False, tao_file_moi),
+        ("don-dep-dry-run", ["don-dep", "--du-an", "ao thun trang"], None, 60, False),
+        ("du-an-ten-mo-ho (mong đợi mã 2)", ["du-an", "xem", "ao thun"], "MA2", 60, False),
     ]
     if "giong" in m:
         ca.append(("phu-de-nghe (tiếng Anh)", ["phu-de", s(m["giong"]), "--ngon-ngu", "en", "--mo-hinh", "nhanh"],
@@ -248,7 +317,10 @@ def main() -> int:
     ca = [c for c in danh_sach_ca(m) if not loc or any(x in c[0].lower() for x in loc)]
 
     rows, loi, xem = [], [], []
-    for i, (ten, args, kt, to, xm) in enumerate(ca, 1):
+    for i, case in enumerate(ca, 1):
+        ten, args, kt, to, xm, *extra = case
+        if extra:
+            extra[0]()
         print(f"[{i}/{len(ca)}] {ten} ...", end=" ", flush=True)
         code, out, dt = chay(args, to)
         ly_do = None

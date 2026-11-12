@@ -48,6 +48,7 @@
       "mcp__blender__look",
       "Read(./**)",
       "Edit(./02-THANH-PHAM/**)",
+      "Edit(./02-DU-AN/**)",
       "Edit(./03-THUONG-HIEU/**)",
       "Edit(./04-THU-VIEN-PROMPT/**)",
       "WebSearch",

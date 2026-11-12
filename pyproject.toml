@@ -14,6 +14,7 @@ dependencies = [
     "pydantic>=2.0",             # cho skill capcut-cat-thong-minh
     "pydantic-settings>=2.0",
     "truststore>=0.10",          # dùng kho chứng chỉ hệ điều hành (antivirus/proxy trên Windows)
+    "send2trash>=1.8",          # dọn dự án an toàn qua Thùng rác hệ điều hành
 ]
 
 [tool.uv]

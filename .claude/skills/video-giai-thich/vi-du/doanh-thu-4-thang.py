@@ -11,7 +11,7 @@ class DoanhThu(Scene):
     def construct(self):
         bieu_do_cot(self, ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4"], [45, 62, 80, 118],
                     tieu_de="Doanh thu 4 tháng (triệu đồng)", don_vi="tr")
-        ghi = chu("Tăng trưởng gần gấp 3 lần – ơ kìa, đẹp quá!", 36, MAU["chinh"], True).to_edge(DOWN, buff=0.5)
+        ghi = chu("Tăng trưởng gần gấp 3 lần – nhờ đăng video đều mỗi tuần", 36, MAU["chinh"], True).to_edge(DOWN, buff=0.5)
         self.play(FadeIn(ghi, shift=UP * 0.3))
         self.wait(1.5)
 

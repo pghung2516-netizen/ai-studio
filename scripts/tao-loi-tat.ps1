@@ -3,12 +3,15 @@
 
 $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent $PSScriptRoot
-$TenBoFile = "$TenApp - Bỏ file vào đây"
-$TenThanhPham = "$TenApp - Thành phẩm"
+$TenBoFile = "$TenApp - Hộp thư đến"
+$TenBoFileCu = "$TenApp - Bỏ file vào đây"   # ten cu, se bi xoa
+$TenThanhPham = "$TenApp - Dự án của tôi"
+$TenThanhPhamCu = "$TenApp - Thành phẩm"   # ten loi tat cua ban truoc, se bi xoa
 
 $launcherPath = Join-Path $PSScriptRoot 'mo-ai-studio.ps1'
 $dauVaoPath = Join-Path $Root '01-DAU-VAO'
-$thanhPhamPath = Join-Path $Root '02-THANH-PHAM'
+$thanhPhamPath = Join-Path $Root '02-DU-AN'
+if (-not (Test-Path -LiteralPath $thanhPhamPath -PathType Container)) { New-Item -ItemType Directory -Path $thanhPhamPath -Force | Out-Null }
 $iconApp = Join-Path $Root 'assets\icon\ai-studio.ico'
 $iconDauVao = Join-Path $Root 'assets\icon\dau-vao.ico'
 $iconThanhPham = Join-Path $Root 'assets\icon\thanh-pham.ico'
@@ -71,7 +74,7 @@ function Ma-HoaFileUrl($Path) {
 }
 
 function Xoa-LoiTatCu($NoiDat) {
-    foreach ($name in @("$TenApp.lnk", "$TenBoFile.url", "$TenBoFile.lnk", "$TenThanhPham.url", "$TenThanhPham.lnk")) {
+    foreach ($name in @("$TenApp.lnk", "$TenBoFile.url", "$TenBoFile.lnk", "$TenBoFileCu.url", "$TenBoFileCu.lnk", "$TenThanhPham.url", "$TenThanhPham.lnk", "$TenThanhPhamCu.url", "$TenThanhPhamCu.lnk")) {
         $path = Join-Path $NoiDat $name
         if (Test-Path -LiteralPath $path) {
             Remove-Item -LiteralPath $path -Force

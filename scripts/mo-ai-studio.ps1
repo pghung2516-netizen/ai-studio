@@ -14,6 +14,75 @@ function Ghi-Log($Message) {
     } catch { }
 }
 
+function Mo-Ide($Candidates, $CanClaude, $LyDo, $RootPath) {
+    foreach ($candidate in $Candidates) {
+        if ($candidate.HasClaude -ne $CanClaude) {
+            continue
+        }
+
+        try {
+            $folderArgument = '"' + $RootPath + '"'
+            if ($candidate.IsShim) {
+                Start-Process -FilePath $candidate.Path -ArgumentList $folderArgument -WindowStyle Hidden
+            } else {
+                Start-Process -FilePath $candidate.Path -ArgumentList $folderArgument
+            }
+            Ghi-Log "CHOSEN app=$($candidate.Name) path=$($candidate.Path) reason=$LyDo"
+            return $true
+        } catch {
+            Ghi-Log "ERROR launch $($candidate.Name): $($_.Exception.Message)"
+        }
+    }
+
+    return $false
+}
+
+function Mo-ClaudeDesktop($LyDo, $RootPath) {
+    Ghi-Log 'STEP find registered Claude app'
+    try {
+        $claudeApp = Get-StartApps -ErrorAction Stop |
+            Where-Object { $_.Name -eq 'Claude' } |
+            Select-Object -First 1
+        if ($claudeApp -and $claudeApp.AppID) {
+            $appTarget = "shell:AppsFolder\$($claudeApp.AppID)"
+            Start-Process -FilePath 'explorer.exe' -ArgumentList $appTarget
+            Ghi-Log "CHOSEN app=Claude Desktop source=registered reason=$LyDo"
+            return $true
+        }
+    } catch {
+        Ghi-Log "ERROR registered Claude app: $($_.Exception.Message)"
+    }
+
+    Ghi-Log 'STEP find local Claude app'
+    try {
+        $claudeLocal = Join-Path $env:LOCALAPPDATA 'AnthropicClaude\claude.exe'
+        if (Test-Path -LiteralPath $claudeLocal -PathType Leaf) {
+            Start-Process -FilePath $claudeLocal -WorkingDirectory $RootPath
+            Ghi-Log "CHOSEN app=Claude Desktop source=local reason=$LyDo"
+            return $true
+        }
+    } catch {
+        Ghi-Log "ERROR local Claude app: $($_.Exception.Message)"
+    }
+
+    Ghi-Log 'STEP scan Programs for Claude app'
+    try {
+        $programsPath = Join-Path $env:LOCALAPPDATA 'Programs'
+        $claudePattern = Join-Path $programsPath '*\claude.exe'
+        $claudeExe = Get-ChildItem -Path $claudePattern -File -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+        if ($claudeExe) {
+            Start-Process -FilePath $claudeExe.FullName -WorkingDirectory $RootPath
+            Ghi-Log "CHOSEN app=Claude Desktop source=Programs-scan reason=$LyDo"
+            return $true
+        }
+    } catch {
+        Ghi-Log "ERROR scan Programs: $($_.Exception.Message)"
+    }
+
+    return $false
+}
+
 try {
     Ghi-Log 'START launcher'
     Ghi-Log 'STEP setup workspace'
@@ -57,55 +126,119 @@ try {
         }
     }
 
-    $daMoClaude = $false
-
-    Ghi-Log 'STEP find registered Claude app'
+    Ghi-Log 'STEP read launch preference'
+    $preferencePath = Join-Path $cachePath 'mo-bang.txt'
+    $preference = 'tu-dong'
     try {
-        $claudeApp = Get-StartApps -ErrorAction Stop |
-            Where-Object { $_.Name -eq 'Claude' } |
-            Select-Object -First 1
-        if ($claudeApp -and $claudeApp.AppID) {
-            $appTarget = "shell:AppsFolder\$($claudeApp.AppID)"
-            Start-Process -FilePath 'explorer.exe' -ArgumentList $appTarget
-            $daMoClaude = $true
+        if (Test-Path -LiteralPath $preferencePath -PathType Leaf) {
+            $savedPreference = Get-Content -LiteralPath $preferencePath -ErrorAction Stop |
+                Select-Object -First 1
+            if ($savedPreference -in @('ide', 'claude-desktop', 'tu-dong')) {
+                $preference = $savedPreference
+            } else {
+                Ghi-Log 'INFO invalid launch preference; using tu-dong'
+            }
         }
     } catch {
-        Ghi-Log "ERROR registered Claude app: $($_.Exception.Message)"
-        $daMoClaude = $false
+        Ghi-Log "ERROR launch preference: $($_.Exception.Message)"
+        $preference = 'tu-dong'
     }
+    Ghi-Log "INFO launch preference=$preference"
 
-    if (-not $daMoClaude) {
-        Ghi-Log 'STEP find local Claude app'
-        $claudeLocal = Join-Path $env:LOCALAPPDATA 'AnthropicClaude\claude.exe'
-        if (Test-Path -LiteralPath $claudeLocal -PathType Leaf) {
-            try {
-                Start-Process -FilePath $claudeLocal -WorkingDirectory $Root
-                $daMoClaude = $true
-            } catch {
-                Ghi-Log "ERROR local Claude app: $($_.Exception.Message)"
-                $daMoClaude = $false
+    Ghi-Log 'STEP find IDE candidates'
+    $antigravityExtensions = "$env:USERPROFILE\.antigravity\extensions"
+    $codeExtensions = "$env:USERPROFILE\.vscode\extensions"
+    $cursorExtensions = "$env:USERPROFILE\.cursor\extensions"
+    $possibleIde = @(
+        @{ Name = 'Antigravity'; Path = "$env:LOCALAPPDATA\Programs\Antigravity\Antigravity.exe"; Extensions = $antigravityExtensions },
+        @{ Name = 'Antigravity'; Path = "$env:ProgramFiles\Antigravity\Antigravity.exe"; Extensions = $antigravityExtensions },
+        @{ Name = 'VS Code'; Path = "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe"; Extensions = $codeExtensions },
+        @{ Name = 'VS Code'; Path = "$env:ProgramFiles\Microsoft VS Code\Code.exe"; Extensions = $codeExtensions },
+        @{ Name = 'Cursor'; Path = "$env:LOCALAPPDATA\Programs\cursor\Cursor.exe"; Extensions = $cursorExtensions }
+    )
+    $ideCandidates = @()
+    foreach ($possible in $possibleIde) {
+        if (Test-Path -LiteralPath $possible.Path -PathType Leaf) {
+            $hasClaude = $false
+            if (Test-Path -LiteralPath $possible.Extensions -PathType Container) {
+                $claudeExtension = Get-ChildItem -LiteralPath $possible.Extensions -Directory -Filter 'anthropic.claude-code*' -ErrorAction SilentlyContinue |
+                    Select-Object -First 1
+                $hasClaude = $null -ne $claudeExtension
+            }
+            $ideCandidates += @{
+                Name = $possible.Name
+                Path = $possible.Path
+                HasClaude = $hasClaude
+                IsShim = $false
             }
         }
     }
 
-    if (-not $daMoClaude) {
-        Ghi-Log 'STEP scan Programs for Claude app'
-        try {
-            $programsPath = Join-Path $env:LOCALAPPDATA 'Programs'
-            $claudePattern = Join-Path $programsPath '*\claude.exe'
-            $claudeExe = Get-ChildItem -Path $claudePattern -File -ErrorAction SilentlyContinue |
-                Select-Object -First 1
-            if ($claudeExe) {
-                Start-Process -FilePath $claudeExe.FullName -WorkingDirectory $Root
-                $daMoClaude = $true
+    try {
+        $ideShims = Get-Command antigravity, code, cursor -ErrorAction SilentlyContinue |
+            Where-Object { $_.CommandType -eq 'Application' -and $_.Name -like '*.cmd' }
+        foreach ($shim in $ideShims) {
+            $shimName = $null
+            $shimExtensions = $null
+            if ($shim.Name -like 'antigravity*') {
+                $shimName = 'Antigravity'
+                $shimExtensions = $antigravityExtensions
+            } elseif ($shim.Name -like 'code*') {
+                $shimName = 'VS Code'
+                $shimExtensions = $codeExtensions
+            } elseif ($shim.Name -like 'cursor*') {
+                $shimName = 'Cursor'
+                $shimExtensions = $cursorExtensions
             }
-        } catch {
-            Ghi-Log "ERROR scan Programs: $($_.Exception.Message)"
-            $daMoClaude = $false
+
+            if ($shimName) {
+                $hasClaude = $false
+                if (Test-Path -LiteralPath $shimExtensions -PathType Container) {
+                    $claudeExtension = Get-ChildItem -LiteralPath $shimExtensions -Directory -Filter 'anthropic.claude-code*' -ErrorAction SilentlyContinue |
+                        Select-Object -First 1
+                    $hasClaude = $null -ne $claudeExtension
+                }
+                $ideCandidates += @{
+                    Name = $shimName
+                    Path = $shim.Source
+                    HasClaude = $hasClaude
+                    IsShim = $true
+                }
+            }
+        }
+    } catch {
+        Ghi-Log "ERROR find IDE shims: $($_.Exception.Message)"
+    }
+
+    $daMoApp = $false
+    if ($preference -eq 'claude-desktop') {
+        $daMoApp = Mo-ClaudeDesktop 'preference=claude-desktop' $Root
+        if (-not $daMoApp) {
+            $daMoApp = Mo-Ide $ideCandidates $true 'Claude Desktop unavailable; Claude Code extension installed' $Root
+        }
+        if (-not $daMoApp) {
+            $daMoApp = Mo-Ide $ideCandidates $false 'Claude Desktop unavailable; IDE fallback' $Root
+        }
+    } elseif ($preference -eq 'ide') {
+        $daMoApp = Mo-Ide $ideCandidates $true 'preference=ide; Claude Code extension installed' $Root
+        if (-not $daMoApp) {
+            $daMoApp = Mo-Ide $ideCandidates $false 'preference=ide; IDE without Claude Code extension' $Root
+        }
+        if (-not $daMoApp) {
+            $daMoApp = Mo-ClaudeDesktop 'no IDE available for preference=ide' $Root
+        }
+    } else {
+        $daMoApp = Mo-Ide $ideCandidates $true 'preference=tu-dong; Claude Code extension installed' $Root
+        if (-not $daMoApp) {
+            $daMoApp = Mo-ClaudeDesktop 'no IDE with Claude Code extension' $Root
+        }
+        if (-not $daMoApp) {
+            $daMoApp = Mo-Ide $ideCandidates $false 'Claude Desktop unavailable; IDE fallback' $Root
         }
     }
 
-    if (-not $daMoClaude) {
+    if (-not $daMoApp) {
+        Ghi-Log 'CHOSEN app=fallback reason=no supported app could be opened'
         Ghi-Log 'STEP open Claude download fallback'
         try {
             Start-Process -FilePath 'https://claude.com/download'

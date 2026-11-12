@@ -40,20 +40,39 @@ cd 05-CONG-CU-THEM\remotion; npm install --no-audit --no-fund
 - Remotion có gửi thống kê đếm số lượt render **chỉ khi** có khóa giấy phép; không có khóa thì không gửi gì.
 
 ## Quy trình
-1. Đọc `03-THUONG-HIEU/thuong-hieu.md` → lấy tên shop, màu chính/nền/chữ, giọng văn, CTA.
-2. Thu dữ liệu: bảng người dùng đưa (Excel → nhờ lưu .csv, hoặc dán danh sách) → tạo `.cache/remotion-work/<việc>/san-pham.json` (hoặc .csv, **UTF-8**). Mỗi dòng: `ten-file` (tên file kết quả), `name`, `price` (ghi sẵn dạng `199.000đ`), `oldPrice` (tùy chọn), `tagline`, `cta`, `image` (đường dẫn ảnh sản phẩm; ảnh có thể ở Downloads/Desktop, không cần chép; trống = khung "Ảnh sản phẩm"). Nếu ảnh nền chưa xóa → có thể dùng skill `sua-anh` (xóa nền) trước.
-3. Màu/tên shop chung cho cả lô: ghi vào file `chung.json` (UTF-8) dạng `{"shopName":"...","colorMain":"#...","colorBg":"#...","colorText":"#..."}` rồi truyền `--chung=@chung.json`.
-4. Thử **1 video trước** (xem kết quả, cho người dùng duyệt) rồi mới chạy cả lô. Báo thời gian: mỗi video ~6 giây mất khoảng 30-60 giây; 20 video ~10-20 phút.
-5. Chạy lô, ghi thẳng vào thư mục ngày hôm nay (không bao giờ ghi đè, trùng tên tự thêm `_2`):
-```powershell
-$ngay = Get-Date -Format "yyyy-MM-dd"
-cd 05-CONG-CU-THEM\remotion
-node scripts/render-batch.mjs "..\..\.cache\remotion-work\viec\san-pham.json" "..\..\02-THANH-PHAM\$ngay" "--chung=@..\..\.cache\remotion-work\viec\chung.json"
-```
-Đầu ra có dòng `KET QUA: file1 | file2 ...`.
-   Render 1 video với dữ liệu mặc định: `npx remotion render src/index.ts ProductCard out\video.mp4 --props=duong-dan\props.json` rồi chuyển file cuối vào `02-THANH-PHAM\<ngày>\` bằng tên không trùng.
-6. Kiểm tra: `uv run python -m studio thong-tin <mp4>` (1080x1920, ~6s, có hình) và `uv run python -m studio khung-hinh <mp4> --kiem-tra` → **xem `_TONG-HOP.jpg`**: dấu tiếng Việt đúng, giá không bị cắt, tên dài không tràn. Sai → sửa `src/ProductCard.tsx`, chạy lại.
-7. Báo kết quả, mở thư mục (`Invoke-Item "02-THANH-PHAM\$ngay"`), gợi ý bước tiếp: thêm nhạc (`sua-video`), viết caption cho từng video (`viet-content`).
+1. **Mở hoặc tạo dự án**:
+   - Nếu làm tiếp: `uv run python -m studio du-an ds` / `du-an xem "<dự án>"`.
+   - Nếu việc mới: `uv run python -m studio du-an moi "<Tên dự án>" [file bảng dữ liệu, ảnh...] [--lay-hop-thu]`. File từ `01-DAU-VAO` (Hộp thư đến) được chuyển vào `Gốc/`.
+   - Nếu người dùng nói "lấy file vừa tải về": `tim-file-moi`.
+2. **Hỏi ý tưởng** (skill `hoi-y-tuong`):
+   - Đọc `03-THUONG-HIEU/thuong-hieu.md` → lấy tên shop, màu chính/nền/chữ, giọng văn, CTA.
+   - Hỏi bằng lựa chọn bấm được: kiểu mẫu video hiển thị (thẻ sản phẩm, giá sale, kiểu hiện đại), thời lượng mỗi video, các trường thông tin cần đưa vào.
+   - Nhắc giấy phép 1 lần nếu là công ty từ 4 người trở lên.
+   - Chốt brief và ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "<bản yêu cầu video hàng loạt Remotion>"`.
+3. **Chuẩn bị dữ liệu**:
+   - Bảng người dùng đưa (Excel / CSV / danh sách) → tạo `.cache/remotion-work/<dự án>/san-pham.json` (hoặc .csv, **UTF-8**). Mỗi dòng: `ten-file` (tên file nháp), `name`, `price`, `oldPrice`, `tagline`, `cta`, `image`. Ảnh lấy từ `Gốc/` của dự án (hoặc đường dẫn ngoài). Có thể dùng `sua-anh` xóa nền ảnh trước nếu cần.
+   - Màu/tên shop chung ghi vào `.cache/remotion-work/<dự án>/chung.json`.
+4. **Thử 1 video trước trong nháp**:
+   - Dựng thử 1 video vào thư mục nháp của dự án `.cache/nhap/<dự án>/`:
+     ```powershell
+     cd 05-CONG-CU-THEM\remotion
+     npx remotion render src/index.ts ProductCard "..\..\.cache\nhap\<dự án>\thu-nghiem.mp4" --props="..\..\.cache\remotion-work\<dự án>\san-pham-1.json"
+     ```
+   - Tự kiểm tra bằng `uv run python -m studio thong-tin` và `studio khung-hinh --du-an "<dự án>" --kiem-tra` → xem `_TONG-HOP.jpg` (dấu tiếng Việt, giá, bố cục).
+   - Cho người dùng duyệt mẫu trước khi chạy cả lô. Báo thời gian: mỗi video ~6 giây mất khoảng 30-60 giây.
+5. **Chạy lô vào thư mục nháp của dự án**:
+   - Chạy script render batch xuất thẳng vào `.cache/nhap/<dự án>`:
+     ```powershell
+     cd 05-CONG-CU-THEM\remotion
+     node scripts/render-batch.mjs "..\..\.cache\remotion-work\<dự án>\san-pham.json" "..\..\.cache\nhap\<dự án>" "--chung=@..\..\.cache\remotion-work\<dự án>\chung.json"
+     ```
+   - Đầu ra in danh sách các file video nháp đã tạo.
+6. **Chốt bản cuối vào Thành phẩm & mở thư mục**:
+   - Duyệt các video nháp hoàn thiện và chốt từng file vào `Thành phẩm/`:
+     `uv run python -m studio du-an chot "<dự án>" ".cache/nhap/<dự án>/<ten-file>.mp4" --ten "<tên sản phẩm>"`
+   - Ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "Đã hoàn thành và chốt lô N video sản phẩm vào Thành phẩm."`.
+   - Mở thư mục `Thành phẩm` cho người dùng: PowerShell `Invoke-Item "02-DU-AN\<dự án>\Thành phẩm"` (Mac: `open`).
+7. **Gợi ý bước tiếp / tùy chỉnh**: hỏi bằng lựa chọn bấm được: thêm nhạc nền (`sua-video`), viết caption cho từng video (`viet-content`).
 
 ## Tùy biến mẫu
 - Mẫu gốc: `.claude/skills/video-remotion/template/` (9:16, 6s, tên + giá + nút CTA). Sửa bản trong `05-CONG-CU-THEM/remotion/src/`; muốn giữ lâu dài cho thương hiệu thì cập nhật cả bản template cho cùng.

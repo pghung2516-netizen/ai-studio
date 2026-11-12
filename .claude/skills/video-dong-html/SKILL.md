@@ -37,15 +37,30 @@ npx hyperframes telemetry disable
 - Phiên bản đã ghim (0.9.39 / gsap 3.15.1 / three 0.160.0). `three@0.160.0` cố ý: bản mới hơn không còn file `three.min.js` dạng script thường.
 
 ## 2. Quy trình làm việc
-1. Đọc `03-THUONG-HIEU/thuong-hieu.md` (màu, logo, tên shop, giọng văn). Còn trống → dùng màu mặc định của mẫu.
-2. Hỏi tối đa 1–2 câu nếu thiếu: nội dung chữ, khung (dọc 9:16 / ngang 16:9), có logo/ảnh sản phẩm không. Đủ thì làm luôn. Chữ ngắn gọn, giọng thương hiệu.
-3. Tạo thư mục làm việc từ mẫu (tự chép gsap, three.js, font Be Vietnam Pro vào):
-   `node .claude/skills/video-dong-html/video-dong-html.mjs tao <ten-ngan>` → in `KET QUA: <thư mục dự án>` (nằm trong `.cache/hyperframes-work/`).
-4. Chép logo / ảnh sản phẩm của người dùng vào thư mục `assets/` của dự án (chép, không di chuyển file gốc). Sửa **khối `CFG`** đầu phần `<script>` trong `index.html` (chữ, đường dẫn logo/ảnh, màu hộp 3D) và màu ở khối `:root`. Muốn đổi cảnh/nhịp → sửa timeline GSAP (xem mục 4).
-5. Xem thử nhanh 1 vài khung trước khi dựng thật: `node .claude/skills/video-dong-html/video-dong-html.mjs xuat <thư mục dự án> <ten-file> --nhanh` (bản nháp), hài lòng mới bỏ `--nhanh`.
-   Lệnh `xuat` tự kiểm tra bố cục → dựng → lưu `02-THANH-PHAM/<hôm nay>/<ten-file>.mp4`, trùng tên thì tự thêm `_2`, `_3`. Mẫu 8 giây mất khoảng 30–60 giây → báo trước "khoảng 1 phút nhé".
-6. Kiểm tra: `uv run python -m studio thong-tin <mp4>` (đúng độ dài, khung) rồi `uv run python -m studio khung-hinh <mp4> --kiem-tra` và **xem ảnh `_TONG-HOP.jpg`**: dấu tiếng Việt đúng, chữ không tràn/bị che, 3D có hiện. Sai → sửa `index.html`, dựng lại (đặt tên mới).
-7. Báo kết quả ở đâu, mở thư mục (`explorer`/`Invoke-Item`), gợi ý bước tiếp: thêm nhạc (`sua-video`: `nhac`), thêm logo, hoặc làm bản 16:9/vuông.
+1. **Mở hoặc tạo dự án**:
+   - Nếu làm tiếp: `uv run python -m studio du-an ds` / `du-an xem "<dự án>"`.
+   - Nếu việc mới: `uv run python -m studio du-an moi "<Tên dự án>" [logo, ảnh...] [--lay-hop-thu]`. File từ `01-DAU-VAO` (Hộp thư đến) được chuyển vào `Gốc/` của dự án.
+   - Nếu người dùng nói "lấy ảnh/video vừa tải": `tim-file-moi`.
+2. **Hỏi ý tưởng** (skill `hoi-y-tuong`):
+   - Đọc `03-THUONG-HIEU/thuong-hieu.md` (màu, logo, tên shop, giọng văn).
+   - Hỏi bằng lựa chọn bấm được: nội dung chữ, khung hình (dọc 9:16 / ngang 16:9 / vuông), phong cách màu sắc, thời lượng (8s, 10s, 15s). Người dùng có thể chọn hoặc nói "bạn quyết giúp mình".
+   - Chốt brief và ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "<bản yêu cầu video động>"`.
+3. **Tạo thư mục làm việc từ mẫu**:
+   - `node .claude/skills/video-dong-html/video-dong-html.mjs tao <ten-ngan> [mau]` → in `KET QUA: <thư mục dự án>` (nằm trong `.cache/hyperframes-work/`).
+   - Chép logo / ảnh sản phẩm từ `Gốc/` của dự án vào thư mục `assets/` của dự án HyperFrames (chép, không xóa file gốc). Sửa **khối `CFG`** đầu phần `<script>` trong `index.html` (chữ, đường dẫn logo/ảnh, màu hộp 3D) và màu ở khối `:root`. Muốn đổi cảnh/nhịp → sửa timeline GSAP (xem mục 4).
+4. **Xem thử nhanh & Xuất bản nháp**:
+   - Xem thử nhanh 1 vài khung: `node .claude/skills/video-dong-html/video-dong-html.mjs xuat <thư mục dự án> <ten-file> --ra ".cache/nhap/<dự án>" --nhanh`.
+   - Xuất bản chính thức vào thư mục nháp của dự án:
+     `node .claude/skills/video-dong-html/video-dong-html.mjs xuat <thư mục dự án> <ten-file> --ra ".cache/nhap/<dự án>"`
+     Lệnh `xuat` tự kiểm tra bố cục → dựng video vào nháp (không làm rối dự án). Mẫu 8 giây mất khoảng 30–60 giây → báo trước "khoảng 1 phút nhé".
+5. **Tự kiểm tra**:
+   - `uv run python -m studio thong-tin <mp4> --du-an "<dự án>"` (đúng độ dài, khung).
+   - `uv run python -m studio khung-hinh <mp4> --du-an "<dự án>" --kiem-tra` và **xem ảnh `_TONG-HOP.jpg`**: dấu tiếng Việt đúng, chữ không tràn/bị che, 3D có hiện. Sai → sửa `index.html`, dựng lại.
+6. **Chốt bản cuối & mở thư mục**:
+   - `uv run python -m studio du-an chot "<dự án>" <mp4 nháp> --ten "<nhãn, vd Video khuyến mãi>" [--ghi-chu "…"]` → lưu vào `02-DU-AN/<dự án>/Thành phẩm/`.
+   - Ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "Dựng video động HyperFrames hoàn thiện."`.
+   - Mở thư mục `Thành phẩm` cho người dùng: PowerShell `Invoke-Item "02-DU-AN\<dự án>\Thành phẩm"` (Mac: `open`).
+7. **Gợi ý bước tiếp / tùy chỉnh**: hỏi bằng lựa chọn bấm được: thêm nhạc (`sua-video`: `nhac`), chèn thêm logo, hoặc làm phiên bản 16:9/vuông.
 
 ## 3. Mẫu có sẵn (`templates/`)
 - `khuyen-mai-doc/`: 9:16 1080x1920, 8 giây, 30fps. Chữ chạy từng ký tự, số to "50%", hộp 3D xoay (three.js), dòng "Chỉ hôm nay!", nút "MUA NGAY". Tham số: `tenShop`, `logo`, `dongTren`, `soTo`, `dongDuoi`, `dongPhu`, `nut`, `anhSanPham` (dán lên hộp 3D), `mauHop`, `hien3D`.

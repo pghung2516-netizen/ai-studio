@@ -89,17 +89,75 @@ def dung_khung(ti_le: str = "16:9", xem_truoc: bool = False, nen: str | None = N
 
 
 def chu(noi_dung: str, co: float = 44, mau: str | None = None, dam: bool = False,
-        rong_toi_da: int | None = None) -> Text:
-    """Chữ tiếng Việt. co theo thang 16:9. rong_toi_da = số ký tự mỗi dòng (tự xuống dòng)."""
+        rong_toi_da: int | None = None) -> Text | Paragraph:
+    """Chữ tiếng Việt. co theo thang 16:9. rong_toi_da = số ký tự mỗi dòng (tự xuống dòng).
+
+    Văn bản nhiều dòng được căn giữa theo mặc định để không bị dồn về
+    mép trái trong các thẻ và khung dọc.
+    """
     if rong_toi_da:
         noi_dung = "\n".join(textwrap.wrap(noi_dung, rong_toi_da))
-    return Text(noi_dung, font=TEN_FONT, font_size=co * KF, color=mau or MAU["chu"],
-                weight=BOLD if dam else NORMAL)
+    lop_chu = Paragraph if "\n" in noi_dung else Text
+    tuy_chon = dict(font=TEN_FONT, font_size=co * KF, color=mau or MAU["chu"],
+                    weight=BOLD if dam else NORMAL)
+    if lop_chu is Paragraph:
+        return lop_chu(*noi_dung.splitlines(), alignment="center", **tuy_chon)
+    return lop_chu(noi_dung, **tuy_chon)
+
+
+def _chu_vua_khung(noi_dung: str, co: float, mau: str, dam: bool,
+                   ty_le_rong: float = 0.85) -> Text | Paragraph:
+    """Giữ chữ trên một dòng nếu có thể, rồi mới xuống dòng khi quá dài."""
+    rong = config.frame_width * ty_le_rong
+    mot_dong = chu(noi_dung, co, mau, dam)
+    if mot_dong.width <= rong:
+        return mot_dong
+
+    # Co nhẹ vẫn dễ đọc hơn là xuống dòng một tiêu đề ngắn.
+    he_so = rong / mot_dong.width
+    if he_so >= 0.78:
+        return mot_dong.scale(he_so)
+
+    so_ky_tu = max(10, round(len(noi_dung) * he_so))
+    nhieu_dong = chu(noi_dung, co, mau, dam, so_ky_tu)
+    if nhieu_dong.width > rong:
+        nhieu_dong.scale_to_fit_width(rong)
+    return nhieu_dong
+
+
+def bo_cuc_doc(nhom: VGroup, le_tren: float = 0.14, le_duoi: float = 0.12,
+               gian_deu: bool = True) -> VGroup:
+    """Phân bố các phần tử theo chiều dọc trong vùng an toàn.
+
+    ``le_tren`` và ``le_duoi`` là tỷ lệ theo chiều cao khung; mặc định
+    chừa 12% phía dưới cho giao diện TikTok. Với khung ngang, hàm giữ
+    nguyên bố cục để tương thích các scene cũ.
+    """
+    if not DOC or not nhom:
+        return nhom
+    tren = config.frame_height * (0.5 - le_tren)
+    duoi = -config.frame_height * (0.5 - le_duoi)
+    chieu_cao = tren - duoi
+    tong_chu = sum(m.height for m in nhom)
+    if tong_chu > chieu_cao:
+        nhom.scale(chieu_cao / tong_chu)
+        tong_chu = sum(m.height for m in nhom)
+
+    khoang = ((chieu_cao - tong_chu) / (len(nhom) - 1)
+              if gian_deu and len(nhom) > 1 else 0)
+    y = tren
+    for m in nhom:
+        m.set_x(0)
+        m.set_y(y - m.height / 2)
+        y = m.get_bottom()[1] - khoang
+    if not gian_deu:
+        nhom.move_to([0, (tren + duoi) / 2, 0])
+    return nhom
 
 
 def the_tieu_de(tieu_de: str, phu_de: str | None = None) -> VGroup:
     """Thẻ tiêu đề: chữ lớn, phụ đề nhỏ, vạch màu nhấn bên dưới. Dùng FadeIn / Write."""
-    cot = [chu(tieu_de, 64, MAU["phu"], True, 11 if DOC else 30)]
+    cot = [_chu_vua_khung(tieu_de, 64, MAU["phu"], True)]
     vach = Line(LEFT, RIGHT, color=MAU["nhan"], stroke_width=8 * K).set_width(2.5 * K)
     cot.append(vach)
     if phu_de:
@@ -120,10 +178,16 @@ def danh_sach_buoc(scene: Scene, buoc: list[str], tieu_de: str | None = None,
     nhom = VGroup(*dong).arrange(DOWN, aligned_edge=LEFT, buff=0.9 * K)
     if tieu_de:
         td = the_tieu_de(tieu_de)
-        td.to_edge(UP, buff=1.0 * K)
-        nhom.next_to(td, DOWN, buff=1.2 * K)
+        if DOC:
+            bo_cuc_doc(VGroup(td, *dong))
+        else:
+            td.to_edge(UP, buff=1.0 * K)
+            nhom.next_to(td, DOWN, buff=1.2 * K)
         scene.play(FadeIn(td, shift=DOWN * 0.3), run_time=0.8)
-    nhom.set_x(0)
+    elif DOC:
+        bo_cuc_doc(nhom, le_tren=0.2, le_duoi=0.18)
+    else:
+        nhom.set_x(0)
     for i, d in enumerate(dong):
         if i:
             scene.play(*[x.animate.set_opacity(0.45) for x in dong[:i]], run_time=0.3)
@@ -146,7 +210,7 @@ def bieu_do_cot(scene: Scene, nhan: list[str], gia_tri: list[float], tieu_de: st
     max_v = max(gia_tri)
     y_day = -H * (0.15 if DOC else 0.2)
     if tieu_de:
-        td = chu(tieu_de, 56, MAU["phu"], True, 13 if DOC else 40).to_edge(UP, buff=0.9 * K)
+        td = _chu_vua_khung(tieu_de, 56, MAU["phu"], True).to_edge(UP, buff=0.9 * K)
         scene.play(FadeIn(td, shift=DOWN * 0.3), run_time=0.8)
     mau_cot = mau_cot or [MAU["chinh"], MAU["phu"], MAU["nhan"]]
     truc = Line(LEFT * vung_rong / 2, RIGHT * vung_rong / 2, color=MAU["chu"], stroke_width=3 * K)
@@ -176,10 +240,14 @@ def so_do_luong(scene: Scene, buoc: list[str], tieu_de: str | None = None,
     mau = [MAU["chinh"], MAU["phu"], MAU["nhan"]]
     o = []
     for i, nd in enumerate(buoc):
-        t = chu(nd, 36, WHITE if i % 3 != 2 else MAU["chu"], True, 14 if DOC else 14)
         if DOC:
-            rong, cao = W * 0.78, max(t.height + 0.7 * K, 1.2 * K)
+            rong = W * 0.82
+            t = chu(nd, 36, WHITE if i % 3 != 2 else MAU["chu"], True)
+            if t.width > rong * 0.88:
+                t.scale_to_fit_width(rong * 0.88)
+            cao = max(t.height + 0.7 * K, 1.2 * K)
         else:
+            t = chu(nd, 36, WHITE if i % 3 != 2 else MAU["chu"], True, 14)
             rong, cao = (W * 0.88 - 0.9 * (len(buoc) - 1)) / len(buoc), max(t.height + 1.0, 1.8)
             t.scale_to_fit_width(min(t.width, rong * 0.88))
         hop = RoundedRectangle(corner_radius=0.25 * K, width=rong, height=cao,
@@ -188,10 +256,16 @@ def so_do_luong(scene: Scene, buoc: list[str], tieu_de: str | None = None,
     nhom = VGroup(*o).arrange(DOWN if DOC else RIGHT, buff=0.8 * K if DOC else 0.9)
     nhom.move_to(ORIGIN)
     if tieu_de:
-        td = chu(tieu_de, 56, MAU["phu"], True, 12 if DOC else 40).to_edge(UP, buff=0.9 * K)
-        # đặt sơ đồ ở giữa phần còn lại bên dưới tiêu đề
-        nhom.set_y((td.get_bottom()[1] - H / 2) / 2)
+        td = _chu_vua_khung(tieu_de, 56, MAU["phu"], True)
+        if DOC:
+            bo_cuc_doc(VGroup(td, *o))
+        else:
+            td.to_edge(UP, buff=0.9 * K)
+            # đặt sơ đồ ở giữa phần còn lại bên dưới tiêu đề
+            nhom.set_y((td.get_bottom()[1] - H / 2) / 2)
         scene.play(FadeIn(td, shift=DOWN * 0.3), run_time=0.8)
+    elif DOC:
+        bo_cuc_doc(nhom, le_tren=0.18, le_duoi=0.16)
     mui = []
     for i, h in enumerate(o):
         if i:

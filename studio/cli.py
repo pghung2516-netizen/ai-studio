@@ -25,6 +25,7 @@ def _chu_opts(p: argparse.ArgumentParser, vi_tri_mac_dinh: str) -> None:
 
 def tao_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="studio", description="Bộ công cụ sửa video/ảnh. Kết quả luôn nằm trong 02-THANH-PHAM/<ngày>/")
+    ap.add_argument("--du-an", metavar="<dự án>", help="dùng Gốc và thư mục bản nháp của dự án (có thể đặt sau lệnh)")
     sub = ap.add_subparsers(dest="lenh", metavar="<lệnh>")
 
     def L(ten, ham, help_):
@@ -32,7 +33,47 @@ def tao_parser() -> argparse.ArgumentParser:
         p.set_defaults(ham=ham)
         return p
 
-    from . import doctor, image, subtitle, video
+    from . import doctor, du_an, image, subtitle, tim_file_moi, video
+
+    # --- dự án
+    p_da = sub.add_parser("du-an", help="Tạo và quản lý dự án", description="Tạo và quản lý dự án")
+    da_sub = p_da.add_subparsers(dest="lenh_du_an", metavar="<lệnh dự án>")
+    p = da_sub.add_parser("moi", help="Tạo dự án mới")
+    p.add_argument("ten", help="tên dự án")
+    p.add_argument("file", nargs="*", help="file đầu vào")
+    p.add_argument("--lay-hop-thu", action="store_true", help="lấy mọi file đang nằm trực tiếp trong 01-DAU-VAO")
+    p.set_defaults(ham=du_an.lenh_moi)
+    p = da_sub.add_parser("them", help="Thêm file gốc vào dự án")
+    p.add_argument("du_an", help="tên hoặc một phần tên dự án")
+    p.add_argument("file", nargs="*", help="file đầu vào")
+    p.add_argument("--lay-hop-thu", action="store_true", help="lấy mọi file đang nằm trực tiếp trong 01-DAU-VAO")
+    p.set_defaults(ham=du_an.lenh_them)
+    p = da_sub.add_parser("ds", help="Liệt kê dự án mới nhất")
+    p.add_argument("--so", type=int, default=20)
+    p.set_defaults(ham=du_an.lenh_ds)
+    p = da_sub.add_parser("xem", help="Xem file và nhật ký dự án")
+    p.add_argument("du_an")
+    p.set_defaults(ham=du_an.lenh_xem)
+    p = da_sub.add_parser("ghi", help="Ghi thêm vào nhật ký")
+    p.add_argument("du_an")
+    p.add_argument("noi_dung")
+    p.set_defaults(ham=du_an.lenh_ghi)
+    p = da_sub.add_parser("chot", help="Chốt một bản nháp thành thành phẩm")
+    p.add_argument("du_an")
+    p.add_argument("file")
+    p.add_argument("--ten", required=True, help="nhãn phiên bản, ví dụ quang-cao")
+    p.add_argument("--ghi-chu")
+    p.add_argument("--kem-phu-de", action="store_true", help="chép kèm .srt/.txt cùng tên nếu có")
+    p.set_defaults(ham=du_an.lenh_chot)
+
+    p = L("tim-file-moi", tim_file_moi.lenh_tim_file_moi, "Tìm media mới nhất trong các thư mục thường dùng")
+    p.add_argument("--loai", default="tat-ca", choices=["video", "anh", "am-thanh", "tat-ca"])
+    p.add_argument("--so", type=int, default=10)
+    p.add_argument("--gio", type=int, default=168)
+    p = L("don-dep", du_an.lenh_don_dep, "Xem trước hoặc chuyển dự án cũ vào Thùng rác")
+    p.add_argument("--cu-hon", type=int, default=30, help="số ngày không hoạt động")
+    p.add_argument("--du-an", dest="_du_an_hien_thi", metavar="<dự án>", help="chọn duy nhất một dự án")
+    p.add_argument("--xac-nhan", action="store_true", help="chuyển vào Thùng rác")
 
     # --- hệ thống
     L("kiem-tra", doctor.lenh_kiem_tra, "Kiểm tra máy đã cài đủ công cụ chưa")
@@ -180,11 +221,35 @@ def tao_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     bat_utf8()
     ap = tao_parser()
-    a = ap.parse_args(argv)
+    raw = list(sys.argv[1:] if argv is None else argv)
+    clean: list[str] = []
+    du_an_name: str | None = None
+    i = 0
+    while i < len(raw):
+        token = raw[i]
+        if token == "--du-an":
+            if i + 1 >= len(raw):
+                ap.error("--du-an cần tên dự án")
+            du_an_name = raw[i + 1]
+            i += 2
+            continue
+        if token.startswith("--du-an="):
+            du_an_name = token.split("=", 1)[1]
+            i += 1
+            continue
+        clean.append(token)
+        i += 1
+    a = ap.parse_args(clean)
+    a.du_an_studio = du_an_name
     if not getattr(a, "ham", None):
         ap.print_help()
         return 0
     try:
+        if du_an_name and a.lenh not in ("du-an", "don-dep", "tim-file-moi"):
+            from .common import dat_du_an_hien_tai
+            from .du_an import tim_du_an
+
+            dat_du_an_hien_tai(tim_du_an(du_an_name))
         a.ham(a)
         return 0
     except LoiNguoiDung as e:

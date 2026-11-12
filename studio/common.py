@@ -13,12 +13,18 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DAU_VAO = ROOT / "01-DAU-VAO"
+DAU_VAO = Path(os.environ["STUDIO_DAU_VAO"]) if os.environ.get("STUDIO_DAU_VAO") else ROOT / "01-DAU-VAO"
 # STUDIO_THANH_PHAM: chỉ dùng khi chạy kiểm thử (scripts/kiem-thu.py) để không làm rối thư mục kết quả thật
 THANH_PHAM = Path(os.environ["STUDIO_THANH_PHAM"]) if os.environ.get("STUDIO_THANH_PHAM") else ROOT / "02-THANH-PHAM"
 THUONG_HIEU = ROOT / "03-THUONG-HIEU"
 FONTS = ROOT / "assets" / "fonts"
 CACHE = ROOT / ".cache"
+DU_AN = Path(os.environ["STUDIO_DU_AN"]) if os.environ.get("STUDIO_DU_AN") else ROOT / "02-DU-AN"
+NHAP = Path(os.environ["STUDIO_NHAP"]) if os.environ.get("STUDIO_NHAP") else CACHE / "nhap"
+
+GOC = "Gốc"
+THANH_PHAM_DA = "Thành phẩm"
+NHAT_KY = "nhat-ky.md"
 
 FONT_THUONG = FONTS / "BeVietnamPro-Regular.ttf"
 FONT_DAM = FONTS / "BeVietnamPro-Bold.ttf"
@@ -80,8 +86,39 @@ def ten_an_toan(s: str, toi_da: int = 60) -> str:
     return (s or "file")[:toi_da]
 
 
+def ten_tieng_viet_an_toan(s: str, toi_da: int = 120) -> str:
+    """Giữ Unicode/NFC, chỉ thay ký tự Windows cấm và ký tự điều khiển."""
+    s = unicodedata.normalize("NFC", str(s))
+    s = "".join("-" if c in '<>:"/\\|?*' or ord(c) < 32 or ord(c) == 127 else c for c in s)
+    s = s.rstrip(" .") or "file"
+    if len(s) <= toi_da:
+        return s
+    suffix = Path(s).suffix
+    if suffix and len(suffix) < toi_da // 2:
+        return s[:toi_da - len(suffix)].rstrip(" .") + suffix
+    return s[:toi_da].rstrip(" .") or "file"
+
+
+_DU_AN_HIEN_TAI: Path | None = None
+
+
+def dat_du_an_hien_tai(du_an: Path | None) -> None:
+    """Đặt ngữ cảnh cho một lần chạy CLI; ``None`` giữ hành vi cũ."""
+    global _DU_AN_HIEN_TAI
+    _DU_AN_HIEN_TAI = du_an.resolve() if du_an else None
+
+
+def du_an_hien_tai() -> Path | None:
+    return _DU_AN_HIEN_TAI
+
+
+def thu_muc_nhap_du_an(du_an: Path | None = None) -> Path | None:
+    p = du_an or _DU_AN_HIEN_TAI
+    return NHAP / ten_an_toan(p.name) if p else None
+
+
 def thu_muc_hom_nay() -> Path:
-    d = THANH_PHAM / _dt.date.today().isoformat()
+    d = thu_muc_nhap_du_an() or (THANH_PHAM / _dt.date.today().isoformat())
     d.mkdir(parents=True, exist_ok=True)
     return d
 
@@ -104,21 +141,31 @@ def file_ra(goc: Path | str, hau_to: str, ext: str | None = None, thu_muc: Path 
 
 
 def tim_file(duong_dan: str, loai: set[str] | None = None) -> Path:
-    """Nhận đường dẫn đầy đủ, tương đối, hoặc chỉ tên file nằm trong 01-DAU-VAO."""
+    """Nhận đường dẫn đầy đủ, tương đối, hoặc tên file trong các thư mục ưu tiên."""
     raw = duong_dan.strip().strip('"').strip("'")
-    cands = [Path(raw), ROOT / raw, DAU_VAO / raw]
+    draft = thu_muc_nhap_du_an()
+    goc = _DU_AN_HIEN_TAI / GOC if _DU_AN_HIEN_TAI else None
+    cands = [Path(raw), ROOT / raw]
+    cands += [d / raw for d in (draft, goc, DAU_VAO) if d is not None]
     for c in cands:
         if c.exists():
             p = c.resolve()
             break
     else:
-        # tìm gần đúng theo tên trong 01-DAU-VAO
-        ten = Path(raw).name.lower()
-        hits = [f for f in DAU_VAO.rglob("*") if f.is_file() and ten in f.name.lower()] if DAU_VAO.exists() else []
+        # tìm gần đúng theo tên: bản nháp -> Gốc -> Hộp thư đến
+        ten = ten_an_toan(Path(raw).name).lower()
+        hits: list[Path] = []
+        for d in (draft, goc, DAU_VAO):
+            if not d or not d.exists():
+                continue
+            matches = [f for f in d.rglob("*") if f.is_file() and ten in ten_an_toan(f.name).lower()]
+            if matches:
+                hits = matches
+                break
         if len(hits) == 1:
             p = hits[0].resolve()
         elif len(hits) > 1:
-            ds = "\n  ".join(str(h.relative_to(ROOT)) for h in hits[:10])
+            ds = "\n  ".join(str(h) for h in hits[:10])
             raise LoiNguoiDung(f"Có nhiều file khớp với '{raw}':\n  {ds}\nHãy nói rõ file nào.")
         else:
             raise LoiNguoiDung(f"Không tìm thấy file '{raw}'. Hãy bỏ file vào thư mục 01-DAU-VAO rồi thử lại.")

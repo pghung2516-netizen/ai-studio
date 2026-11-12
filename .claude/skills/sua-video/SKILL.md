@@ -5,16 +5,25 @@ description: Sửa video thật (quay bằng điện thoại/máy quay) - cắt 
 
 # Sửa video
 
-Luôn dùng `uv run python -m studio <lệnh>` (xem `--help` của từng lệnh khi cần). Tất cả lệnh tự lưu vào `02-THANH-PHAM/<ngày>/`, không ghi đè.
+Luôn dùng `uv run python -m studio <lệnh> --du-an "<dự án>"` (xem `--help` khi cần). Mọi lệnh xử lý thêm `--du-an` để lưu nháp vào `.cache/nhap/<dự án>/` (giấu kín với người dùng) và tự động tìm file đầu vào trong `Gốc/` của dự án.
 
 ## Quy trình
-1. **Xác định file**: tên file người dùng nói / file mới nhất trong `01-DAU-VAO` (`studio danh-sach`). Không chắc → hỏi kèm danh sách để chọn.
-2. **Đọc thông tin**: `studio thong-tin <file>` → biết độ dài, khung, có tiếng không.
-3. **Làm** theo bảng dưới. Việc nhiều bước → nối tiếp, mỗi bước dùng file `KET QUA` của bước trước.
-4. **Tự kiểm tra**: `thong-tin` file kết quả; nếu có chữ/logo/đổi khung → `khung-hinh <file> --so 6 --kiem-tra` và **xem ảnh `_TONG-HOP.jpg`**.
-5. **Báo kết quả** + mở thư mục (PowerShell: `Invoke-Item "<thư mục>"`), gợi ý bước tiếp.
+1. **Mở hoặc tạo dự án**:
+   - Nếu làm tiếp: `uv run python -m studio du-an ds` để tìm dự án cũ, hoặc `du-an xem "<dự án>"`.
+   - Nếu việc mới: `uv run python -m studio du-an moi "<Tên dự án>" [file ...] [--lay-hop-thu]`. File từ `01-DAU-VAO` (Hộp thư đến) được chuyển vào `Gốc/`; file từ chat/Downloads được chép vào `Gốc/`.
+   - Nếu người dùng nói "lấy video mình vừa tải về": chạy `tim-file-moi --loai video` cho người dùng chọn số.
+2. **Hỏi ý tưởng** (với việc sáng tạo nhiều bước như dựng video TikTok, ghép clip, chèn nhạc/chữ/logo): chạy skill `hoi-y-tuong` (hỏi bằng lựa chọn bấm được, người dùng có thể chọn hoặc nói "bạn quyết giúp mình") → lưu brief bằng `uv run python -m studio du-an ghi "<dự án>" "<bản yêu cầu>"`.
+   *(Việc máy móc 1 bước như nén nhẹ, xoay, đổi định dạng, chuẩn âm lượng thì bỏ qua hỏi ý tưởng, làm ngay).*
+3. **Đọc thông tin**: `studio thong-tin <file> --du-an "<dự án>"` → biết độ dài, khung, có tiếng không.
+4. **Làm** theo bảng dưới, luôn kèm `--du-an "<dự án>"`. Việc nhiều bước → nối tiếp trong nháp, mỗi bước dùng file `KET QUA` của bước trước.
+5. **Tự kiểm tra**: `thong-tin` file kết quả; nếu có chữ/logo/đổi khung → `khung-hinh <file> --du-an "<dự án>" --so 6 --kiem-tra` và **xem ảnh `_TONG-HOP.jpg`**.
+6. **Chốt bản cuối & mở thư mục**:
+   - `uv run python -m studio du-an chot "<dự án>" <file nháp> --ten "<nhãn, vd TikTok>" [--ghi-chu "<vd chữ to hơn>"]` → xuất bản hoàn thiện vào `02-DU-AN/<dự án>/Thành phẩm/` với tên chuẩn `<Tên dự án> - <nhãn> - bản N.mp4`.
+   - Ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "<các bước chính đã thực hiện>"`.
+   - Mở thư mục `Thành phẩm` cho người dùng: PowerShell `Invoke-Item "02-DU-AN\<dự án>\Thành phẩm"` (Mac: `open`).
+7. **Gợi ý bước tiếp / chỉnh sửa**: hỏi bằng lựa chọn bấm được (mỗi lần chỉnh xuất thành một bản chốt mới, bản cũ vẫn giữ).
 
-## Bảng ánh xạ yêu cầu → lệnh
+## Bảng ánh xạ yêu cầu → lệnh (thêm `--du-an "<dự án>"`)
 
 | Người dùng nói | Lệnh |
 |---|---|

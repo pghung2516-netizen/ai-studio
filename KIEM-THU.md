@@ -73,10 +73,21 @@ Mỗi câu dưới đây phải chạy từ máy chưa cài gì thêm (để tes
 
 ### E. Lớp "app" (v1.2): icon, lối tắt, trình mở
 Sau khi `CAI-DAT.bat` chạy xong, kiểm tra và ghi lại kèm ảnh chụp màn hình:
-- Trên Desktop và trong Start Menu có 3 lối tắt: **TTomorrow Studio**, **TTomorrow Studio - Bỏ file vào đây**, **TTomorrow Studio - Thành phẩm**. Icon có đúng không? Tên có dấu có hiển thị đúng không?
+- Trên Desktop và trong Start Menu có 3 lối tắt: **TTomorrow Studio**, **TTomorrow Studio - Hộp thư đến**, **TTomorrow Studio - Dự án của tôi**. Icon có đúng không? Tên có dấu có hiển thị đúng không?
 - PowerShell chạy ở chế độ nào? Chạy lệnh `$ExecutionContext.SessionState.LanguageMode` trong cửa sổ PowerShell thường. Nếu ra `ConstrainedLanguage` thì đây là máy bị hạn chế, lúc đó lối tắt thư mục sẽ là file `.url`, và **không có** lối tắt TTomorrow Studio.
 - Nhấp đúp **TTomorrow Studio**: Claude Desktop có mở không? Có nháy cửa sổ đen không? Lần đầu có mở `HUONG-DAN-NHANH.html` không? Nhấn Ctrl+V xem đường dẫn workspace có nằm sẵn trong clipboard không?
 - Máy **chưa cài** Claude Desktop: phải mở trang claude.com/download và trang hướng dẫn.
+
+### F. Dự án + hỏi ý (v1.3) — test bằng hội thoại như người dùng thật
+- **Trình mở:** nhấp **TTomorrow Studio** → phải mở **Antigravity IDE đúng thư mục workspace** (máy có Claude Code trong IDE). Ghi nội dung `%TEMP%\ttomorrow-studio.log` (dòng chọn ứng dụng nào, vì sao).
+- **3 cách đưa file:**
+  1. Bỏ 1 video vào **Hộp thư đến** → nói "làm video TikTok từ video mình vừa bỏ vào" → phải tạo dự án, **file biến khỏi Hộp thư đến và nằm trong `Gốc/`**.
+  2. **Kéo thả 1 video vào khung chat** → Claude có nhận được đường dẫn file không? (ghi rõ: thấy đường dẫn / chỉ thấy ảnh / không nhận) → file phải được **chép** vào `Gốc/`, bản gốc vẫn còn chỗ cũ.
+  3. Tải 1 ảnh về Downloads rồi nói "lấy ảnh mình vừa tải về" → Claude hiện danh sách đánh số để chọn.
+- **Hỏi ý kiểu "grill me":** với yêu cầu sáng tạo, Claude có xem tư liệu trước, đưa 2–3 hướng, hỏi bằng **nút bấm** (AskUserQuestion có hiện trong Antigravity IDE không?), chốt "bản yêu cầu" trước khi làm không? Việc máy móc (nén video) thì phải làm luôn, không hỏi.
+- **Thành phẩm:** chỉ bản cuối nằm trong `Thành phẩm/`, tên có dấu "… - bản 1"; yêu cầu chỉnh thêm → "bản 2 (…)"; file nháp không lộ ra. Lối tắt **Dự án của tôi** mở `02-DU-AN`.
+- **Làm tiếp ở phiên mới:** mở phiên Claude mới, nói "làm tiếp dự án áo thun" → Claude đọc nhật ký và biết đã làm gì.
+- **Dọn dẹp:** nói "dọn dự án cũ" → Claude phải báo cáo trước và **hỏi** trước khi chuyển vào Thùng rác.
 
 ## Script kiểm thử làm gì
 `scripts/kiem-thu.py` tự tạo file mẫu trong `.cache\kiem-thu\Mẫu thử có dấu\` (video ngang/dọc, nhạc, ảnh, logo, phụ đề tiếng Việt, giọng nói TTS tiếng Anh), chạy ~33 ca phủ mọi lệnh `studio`, kiểm tra mã thoát + độ dài + khung hình + có/không tiếng, rồi xuất `BAO-CAO.md` (gọn, chỉ in 15 dòng cuối của ca lỗi) và `_XEM-MAT.jpg`. Kết quả nằm trong `.cache\` (không lên git, không làm rối `02-THANH-PHAM`).

@@ -85,3 +85,10 @@ Quy trình test trên Windows và gửi kết quả về Mac qua GitHub Issue: x
   - Tên app nằm ở biến `$TenApp` trong 3 script + icon + trang hướng dẫn.
   - Chưa test trên Windows: xem mục E trong `KIEM-THU.md`.
 - v1.2.1 (2026-11-13) — đổi tên app hiển thị thành **TTomorrow Studio** (lối tắt, trang hướng dẫn, bộ cài, `MO-TTOMORROW-STUDIO.bat`). Tên repo và tên file nội bộ (`mo-ai-studio.ps1`, `ai-studio.ico`) giữ nguyên.
+- v1.3 (2026-11-13) — **Mỗi việc là một dự án** + **hỏi ý kiểu "grill me"**:
+  - `02-DU-AN/<ngày> <Tên>/` gồm `Gốc/`, `Thành phẩm/` (chỉ bản cuối, tên có dấu, "bản N (ghi chú)"), `nhat-ky.md`; nháp ở `.cache/nhap/`. `01-DAU-VAO` thành Hộp thư đến: file được **chuyển** sang dự án (không sửa/xóa).
+  - Lệnh mới: `studio du-an moi|them|ds|xem|ghi|chot`, tùy chọn chung `--du-an` cho mọi lệnh xử lý, `tim-file-moi` (Downloads, Desktop, Zalo, Pictures, Videos), `don-dep` (chuyển vào Thùng rác qua `send2trash`, luôn hỏi trước). Test: 44 ca.
+  - Skill mới `hoi-y-tuong`: xem tư liệu → đề xuất 2–3 hướng → hỏi bằng lựa chọn bấm được → chốt bản yêu cầu → làm → hỏi tiếp để làm bản sau. 11 skill cũ chuyển sang quy trình dự án; `CLAUDE.md` có "Quy trình một việc".
+  - Trình mở ưu tiên **IDE có Claude Code** (Antigravity / VS Code / Cursor) — mở thẳng workspace; chọn bằng `.cache/mo-bang.txt` (`tu-dong` | `ide` | `claude-desktop`). Lối tắt đổi tên: "Hộp thư đến", "Dự án của tôi".
+  - Video mẫu Manim: bố cục dọc cân đối, tiêu đề không xuống dòng (helper `bo_cuc_doc()`).
+  - Chưa test Windows: mục F trong `KIEM-THU.md`.

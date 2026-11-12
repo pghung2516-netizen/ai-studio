@@ -19,7 +19,7 @@ Claude điều khiển Blender đang mở trên máy người dùng: tạo hộp
 3. Poly Haven (nền HDRI, vật liệu miễn phí CC0) chỉ **tải về**, không gửi file người dùng đi: được dùng nếu cần, nhưng báo "cần mạng, tải vài chục MB" và hỏi trước.
 4. Máy chủ MCP đã cấu hình **tắt thu thập dữ liệu** (`DISABLE_TELEMETRY`) và **chế độ an toàn** (chặn code đọc/ghi file tùy ý, chạy chương trình khác, truy cập mạng). Nếu có hộp thoại xin "đồng ý chia sẻ dữ liệu/prompt" → chọn **KHÔNG**. Công cụ có thể gợi ý quảng cáo bản Premium: **bỏ qua**, đừng nhắc người dùng.
 5. Đừng bao giờ tắt chế độ an toàn hay mở "Allow Remote Connections" trong Blender.
-6. Ảnh của người dùng chỉ **đọc** từ đường dẫn của họ (không sửa `01-DAU-VAO`); mọi kết quả ghi vào `02-THANH-PHAM/<ngày hôm nay>/`, tên không trùng file cũ.
+6. Ảnh của người dùng được chuyển vào `Gốc/` của dự án (hoặc chép từ ngoài); mọi file trung gian ghi vào nháp `.cache/nhap/<dự án>/`; bản hoàn thiện chốt vào `Thành phẩm/` qua lệnh `du-an chot`.
 
 ## Cài đặt một lần (Claude làm hết phần máy; người dùng chỉ bấm vài nút)
 Báo trước: "mình cài Blender, khoảng 5–10 phút, tải gần 400 MB nhé".
@@ -37,14 +37,26 @@ Báo trước: "mình cài Blender, khoảng 5–10 phút, tải gần 400 MB nh
 Gọi `get_addon_status`. Có phiên bản Blender/add-on → tốt. Báo lỗi "Could not connect" → xem mục Sửa lỗi. Sau đó `get_scene_info` để biết cảnh hiện có gì.
 
 ## Quy trình dựng cảnh sản phẩm
-1. Hỏi tối đa 1–2 câu (kèm gợi ý): sản phẩm là gì (hộp? có ảnh bao bì/ảnh sản phẩm?), kết quả muốn: **ảnh** (vuông/dọc/ngang) hay **video xoay 360**? Mặc định: ảnh vuông 1080×1080, nền studio sáng; video dọc 1080×1920, 6 giây.
-2. Có ảnh của người dùng: chạy `thong-tin`; ảnh sản phẩm chụp rời → `uv run python -m studio xoa-nen` trước rồi dùng `product_card` (tấm ảnh đứng, nền trong); ảnh/hoa văn bao bì → dán lên `product_box` (hộp). Không có ảnh → hộp màu theo `03-THUONG-HIEU/thuong-hieu.md`.
-3. Đọc `.claude/skills/blender-3d/product_scene.py` (bộ hàm: `clear_scene`, `set_engine_eevee`, `studio_floor`, `product_box`, `product_card`, `three_point_lights`, `add_camera`, `set_output`, `render_still`, `setup_turntable`). Dán nội dung + vài dòng gọi hàm vào `execute_blender_code`. Đường dẫn Windows viết dạng `r"C:\..."`; đường dẫn đầy đủ tính sẵn trước khi dán (code ở chế độ an toàn không dùng được `os`/`open`).
-4. Làm từng bước nhỏ (dựng → `look` xem thử → chỉnh → render). Dùng `look` (chế độ `camera`) kiểm tra bố cục, đèn, sản phẩm có nằm giữa khung không trước khi render.
-5. **Ảnh tĩnh**: `set_output(...)` + `render_still(<02-THANH-PHAM\ngày\ten.png>)` bằng Eevee (nhanh, 10–60 giây). Cần đẹp hơn mới đổi Cycles (chậm, báo trước).
-6. **Video xoay 360**: `setup_turntable(sp, 6, 30, <mp4>)` → lưu `.blend` vào thư mục kết quả bằng `bpy.ops.wm.save_as_mainfile(filepath=...)` → render **bằng dòng lệnh** (không làm Blender đơ, không bị ngắt kết nối): tìm `blender.exe`, rồi chạy `& "<blender.exe>" -b "<file.blend>" -a`. Báo trước "khoảng 2–5 phút". Có thể thử 1 khung trước: `-f 1`.
-7. Xử lý tiếp bằng `studio`: thêm nhạc (`nhac`), logo (`logo`), chữ (`chu`), đổi khung (`khung 9:16`), phụ đề. Lấy `KET QUA` bước trước làm đầu vào.
-8. Kiểm tra: ảnh → mở xem; video → `thong-tin` + `khung-hinh <file> --kiem-tra` rồi xem `_TONG-HOP.jpg` (sản phẩm có xoay đủ vòng, không bị cắt, không có nền lạ). Mở thư mục kết quả cho người dùng và gợi ý 1 bước tiếp ("thêm nhạc và logo cho video xoay này nhé?").
+1. **Mở hoặc tạo dự án**:
+   - Nếu làm tiếp: `uv run python -m studio du-an ds` / `du-an xem "<dự án>"`.
+   - Nếu việc mới: `uv run python -m studio du-an moi "<Tên dự án>" [ảnh bao bì/sản phẩm...] [--lay-hop-thu]`. File từ `01-DAU-VAO` được chuyển vào `Gốc/`.
+   - Nếu người dùng nói "lấy ảnh vừa tải về": `tim-file-moi --loai anh`.
+2. **Hỏi ý tưởng** (skill `hoi-y-tuong`):
+   - Hỏi bằng lựa chọn bấm được: sản phẩm là gì (hộp quà, chai lọ, bao bì?), kết quả muốn: **ảnh tĩnh** (vuông/dọc/ngang) hay **video xoay 360**? Nền studio màu gì?
+   - Mặc định: ảnh vuông 1080×1080, nền studio sáng; video dọc 1080×1920, 6 giây.
+   - Chốt brief và ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "<bản yêu cầu 3D Blender>"`.
+3. **Chuẩn bị ảnh**: có ảnh của người dùng: chạy `thong-tin --du-an "<dự án>"`; ảnh sản phẩm chụp rời → `uv run python -m studio xoa-nen <ảnh> --du-an "<dự án>"` trước rồi dùng `product_card` (tấm ảnh đứng, nền trong); ảnh/hoa văn bao bì → dán lên `product_box` (hộp). Không có ảnh → hộp màu theo `03-THUONG-HIEU/thuong-hieu.md`.
+4. **Dựng cảnh**: đọc `.claude/skills/blender-3d/product_scene.py` (bộ hàm: `clear_scene`, `set_engine_eevee`, `studio_floor`, `product_box`, `product_card`, `three_point_lights`, `add_camera`, `set_output`, `render_still`, `setup_turntable`). Dán nội dung + vài dòng gọi hàm vào `execute_blender_code`. Đường dẫn Windows viết dạng `r"C:\..."`. Làm từng bước nhỏ, dùng `look` (chế độ `camera`) kiểm tra bố cục, đèn, sản phẩm giữa khung trước khi render.
+5. **Render vào thư mục nháp của dự án** (`.cache/nhap/<dự án>/`):
+   - **Ảnh tĩnh**: `set_output(...)` + `render_still(r".cache\nhap\<dự án>\<ten>.png")` bằng Eevee (nhanh, 10–60 giây). Cần đẹp hơn mới đổi Cycles (chậm, báo trước).
+   - **Video xoay 360**: `setup_turntable(sp, 6, 30, r".cache\nhap\<dự án>\<ten>.mp4")` → lưu `.blend` vào thư mục nháp bằng `bpy.ops.wm.save_as_mainfile(filepath=r".cache\nhap\<dự án>\<ten>.blend")` → render **bằng dòng lệnh**: tìm `blender.exe`, rồi chạy `& "<blender.exe>" -b ".cache\nhap\<dự án>\<ten>.blend" -a`. Báo trước "khoảng 2–5 phút".
+6. **Xử lý tiếp bằng `studio`** (nếu cần): thêm nhạc (`nhac`), logo (`logo`), chữ (`chu`), đổi khung (`khung 9:16`), phụ đề. Luôn kèm `--du-an "<dự án>"`.
+7. **Kiểm tra & Chốt bản cuối vào Thành phẩm**:
+   - Ảnh → mở xem; video → `studio thong-tin` + `khung-hinh --du-an "<dự án>" --kiem-tra` rồi xem `_TONG-HOP.jpg` (sản phẩm xoay đủ vòng, không bị cắt).
+   - `uv run python -m studio du-an chot "<dự án>" <file nháp> --ten "<nhãn, vd Ảnh 3D sản phẩm / Video xoay 360>"` → lưu vào `02-DU-AN/<dự án>/Thành phẩm/`.
+   - Ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "Dựng cảnh 3D Blender và render hoàn thiện."`.
+   - Mở thư mục `Thành phẩm` cho người dùng: PowerShell `Invoke-Item "02-DU-AN\<dự án>\Thành phẩm"` (Mac: `open`).
+8. **Gợi ý bước tiếp / tùy chỉnh**: hỏi bằng lựa chọn bấm được: thêm nhạc nền và logo, đổi góc xoay, hoặc làm thêm ảnh cận cảnh.
 
 ## Mẹo ý tưởng
 - **Hộp quà**: `product_box` + vật liệu bóng (roughness 0.3) + thêm dải ruy-băng bằng 2 hộp dẹt khác màu.

@@ -47,8 +47,13 @@ Mọi thứ khác của Manim dùng bình thường (`Circle`, `Arrow`, `Transfo
 Hai ví dụ chạy được ngay: `vi-du/3-buoc-dat-hang.py` (dọc, sơ đồ 3 bước) và `vi-du/doanh-thu-4-thang.py` (ngang, biểu đồ cột). Copy và sửa chữ/số là ra video mới.
 
 ## Quy trình làm việc
-1. **Hỏi tối đa 1–2 câu** nếu thiếu: nội dung/số liệu, và "TikTok (dọc) hay YouTube (ngang)?". Đủ thì làm luôn. Không dùng số liệu bịa cho việc thật — hỏi số thật.
-2. **Viết cảnh** vào `.cache/video-giai-thich/<ten-ngan>.py` (thư mục tạm của mình, tạo nếu chưa có), mẫu:
+1. **Mở hoặc tạo dự án**:
+   - Nếu làm tiếp: `uv run python -m studio du-an ds` / `du-an xem "<dự án>"`.
+   - Nếu việc mới: `uv run python -m studio du-an moi "<Tên dự án>" [--lay-hop-thu]`.
+2. **Hỏi ý tưởng** (skill `hoi-y-tuong`):
+   - Hỏi bằng lựa chọn bấm được: nội dung/số liệu thực tế, hình thức thể hiện (quy trình các bước / sơ đồ luồng / biểu đồ cột chạy số), khung hình (dọc 9:16 TikTok hay ngang 16:9 YouTube), màu sắc thương hiệu. Người dùng có thể chọn hoặc nói "bạn quyết giúp mình".
+   - Chốt brief và ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "<bản yêu cầu video giải thích Manim>"`.
+3. **Viết cảnh** vào `.cache/video-giai-thich/<ten-ngan>.py` (thư mục tạm của mình, tạo nếu chưa có), mẫu:
    ```python
    import sys
    sys.path.insert(0, r"<đường dẫn tuyệt đối tới .claude/skills/video-giai-thich>")
@@ -61,23 +66,27 @@ Hai ví dụ chạy được ngay: `vi-du/3-buoc-dat-hang.py` (dọc, sơ đồ 
        chay(Canh, "9:16", "ten-video")
    ```
    Ngắn gọn: video TikTok 15–30 giây, mỗi ý 2–4 giây, chữ ít. Dùng `self.wait(1)` cuối mỗi ý cho người xem kịp đọc.
-3. **Xem thử nhanh trước** (nửa độ phân giải, vài giây):
+4. **Xem thử nhanh trước** (nửa độ phân giải, vài giây):
    ```
    uv run --no-project --python 3.12 --with manim==0.22.1 python -W ignore ".cache\video-giai-thich\ten-ngan.py" --xem-truoc
    ```
-   Lấy dòng `KET QUA:` rồi `uv run python -m studio khung-hinh <file> --kiem-tra`, **xem ảnh `_TONG-HOP.jpg`**: chữ có tràn khung/chồng nhau không, dấu tiếng Việt đúng chưa, mốc giờ có hợp lý không. Sửa đến khi ổn.
-4. **Xuất bản chính thức** (đủ nét, 30fps) và chép thẳng vào thư mục kết quả của ngày (không bao giờ ghi đè — nếu trùng tên tự thêm `_2`, `_3`):
+   Lấy kết quả xem thử rồi `uv run python -m studio khung-hinh <file> --du-an "<dự án>" --kiem-tra`, **xem ảnh `_TONG-HOP.jpg`**: chữ có tràn khung/chồng nhau không, dấu tiếng Việt đúng chưa, mốc giờ có hợp lý không. Sửa code đến khi ổn.
+5. **Xuất bản nháp chính thức vào thư mục nháp của dự án**:
    ```
-   uv run --no-project --python 3.12 --with manim==0.22.1 python -W ignore ".cache\video-giai-thich\ten-ngan.py" --ra "02-THANH-PHAM\<YYYY-MM-DD hôm nay>"
+   uv run --no-project --python 3.12 --with manim==0.22.1 python -W ignore ".cache\video-giai-thich\ten-ngan.py" --ra ".cache\nhap\<dự án>"
    ```
-   Thường 5–60 giây tùy độ dài (báo trước nếu video dài hơn 1 phút).
-5. **Kiểm tra** bằng `studio thong-tin <file>` (đúng khung 1080×1920 hoặc 1920×1080, đúng độ dài) và xem lại `khung-hinh --kiem-tra` bản chính thức.
-6. **Báo kết quả**: nói tên file + nằm ở `02-THANH-PHAM` → ngày hôm nay, rồi mở thư mục (Windows: `Invoke-Item "02-THANH-PHAM\<ngày>"`; Mac: `open`). Gợi ý 1 bước tiếp theo (thêm giọng đọc/nhạc, hoặc phụ đề).
+   Đầu ra tạo file mp4 hoàn chỉnh trong `.cache/nhap/<dự án>/` (không làm rối dự án). Thường 5–60 giây tùy độ dài (báo trước nếu video dài hơn 1 phút).
+6. **Kiểm tra & Chốt bản cuối vào Thành phẩm**:
+   - `uv run python -m studio thong-tin <mp4> --du-an "<dự án>"` (đúng khung, độ dài).
+   - `uv run python -m studio du-an chot "<dự án>" ".cache/nhap/<dự án>/<ten-video>.mp4" --ten "<nhãn, vd Quy trình 3 bước>"` → lưu vào `02-DU-AN/<dự án>/Thành phẩm/`.
+   - Ghi nhật ký: `uv run python -m studio du-an ghi "<dự án>" "Dựng video hoạt hình giải thích bằng Manim hoàn thiện."`.
+   - Mở thư mục `Thành phẩm` cho người dùng: PowerShell `Invoke-Item "02-DU-AN\<dự án>\Thành phẩm"` (Mac: `open`).
+7. **Gợi ý bước tiếp / tùy chỉnh**: hỏi bằng lựa chọn bấm được: thêm giọng đọc/nhạc nền (`sua-video`: `nhac`), thêm phụ đề (`phu-de`).
 
 ## Thêm giọng đọc, nhạc, phụ đề sau khi xong
 Video Manim không có tiếng. Muốn có tiếng:
-- Nhạc nền: `uv run python -m studio nhac <video> <nhac.mp3>` (nhạc mẫu trong `assets/nhac-mau/`; nhắc bản quyền nếu là nhạc nổi tiếng).
-- Giọng đọc: viết lời đọc bằng skill `viet-content` (khớp từng cảnh); người dùng tự thu âm hoặc tạo giọng AI (CapCut/Vbee) rồi bỏ file vào `01-DAU-VAO`. Ghép: `studio nhac <video> <giong-doc.mp3> --am-luong 1 --khong-giam-nhac`.
+- Nhạc nền: `uv run python -m studio nhac <video> <nhac.mp3> --du-an "<dự án>"` (nhạc mẫu trong `assets/nhac-mau/`; nhắc bản quyền nếu là nhạc nổi tiếng).
+- Giọng đọc: viết lời đọc bằng skill `viet-content` (khớp từng cảnh); người dùng tự thu âm hoặc tạo giọng AI (CapCut/Vbee) rồi bỏ file vào `01-DAU-VAO` → `du-an them`. Ghép: `studio nhac <video> <giong-doc.mp3> --du-an "<dự án>" --am-luong 1 --khong-giam-nhac`.
 - Đồng bộ: nếu đã có giọng đọc, đo độ dài từng câu rồi chỉnh `self.wait(...)` cho khớp trước khi xuất bản chính thức.
 - Phụ đề cứng: skill `phu-de` sau khi đã có giọng đọc.
 
@@ -91,7 +100,7 @@ Video Manim không có tiếng. Muốn có tiếng:
 | Chữ tràn khung / chồng nhau | Giảm `co`, thêm `rong_toi_da`, chia thành 2 cảnh; khung dọc ≤ ~14 ký tự/dòng |
 | `latex ... not found` / `MathTex` lỗi | Không dùng `MathTex/Tex`; viết công thức bằng `chu("...")` hoặc nhờ người dùng cài MiKTeX |
 | `ModuleNotFoundError: nen_tang` | Dòng `sys.path.insert` sai đường dẫn tới thư mục skill |
-| File `.mp4` đang mở/khóa | Nhờ người dùng đóng trình phát video rồi chạy lại (kết quả tự đổi tên, không ghi đè) |
+| File `.mp4` đang mở/khóa | Nhờ người dùng đóng trình phát video rồi chạy lại |
 | Dòng lệnh quá chậm | Dùng `--xem-truoc`; giảm số `self.play` / thời lượng `wait` |
 
 ### Lỗi trên Windows (Smart App Control, diệt virus)

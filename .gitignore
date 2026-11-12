@@ -16,6 +16,8 @@ CLAUDE.local.md
 !01-DAU-VAO/DOC-TOI.txt
 02-THANH-PHAM/*
 !02-THANH-PHAM/.gitkeep
+02-DU-AN/*
+!02-DU-AN/.gitkeep
 03-THUONG-HIEU/*
 !03-THUONG-HIEU/thuong-hieu.md
 05-CONG-CU-THEM/*/
