@@ -23,19 +23,24 @@ function Loi($msg) {
     exit 1
 }
 
+$ErrorActionPreference = 'Continue'   # setx in canh bao ra stderr khong duoc lam dung ca bo cai
 try {
-    & setx.exe UV_SYSTEM_CERTS 1 >$null 2>&1
-    if ($LASTEXITCODE -ne 0) { throw "setx.exe UV_SYSTEM_CERTS that bai." }
-    & setx.exe UV_PYTHON_DOWNLOADS never >$null 2>&1
-    if ($LASTEXITCODE -ne 0) { throw "setx.exe UV_PYTHON_DOWNLOADS that bai." }
-    & setx.exe UV_NO_MANAGED_PYTHON 1 >$null 2>&1
-    if ($LASTEXITCODE -ne 0) { throw "setx.exe UV_NO_MANAGED_PYTHON that bai." }
-    & setx.exe NODE_USE_SYSTEM_CA 1 >$null 2>&1
-    if ($LASTEXITCODE -ne 0) { throw "setx.exe NODE_USE_SYSTEM_CA that bai." }
+    $setxOutput = & setx.exe UV_SYSTEM_CERTS 1 2>&1 | ForEach-Object { "$_" }
+    $setxExitCode = $LASTEXITCODE
+    if ($setxExitCode -ne 0) { throw "setx.exe UV_SYSTEM_CERTS that bai." }
+    $setxOutput = & setx.exe UV_PYTHON_DOWNLOADS never 2>&1 | ForEach-Object { "$_" }
+    $setxExitCode = $LASTEXITCODE
+    if ($setxExitCode -ne 0) { throw "setx.exe UV_PYTHON_DOWNLOADS that bai." }
+    $setxOutput = & setx.exe UV_NO_MANAGED_PYTHON 1 2>&1 | ForEach-Object { "$_" }
+    $setxExitCode = $LASTEXITCODE
+    if ($setxExitCode -ne 0) { throw "setx.exe UV_NO_MANAGED_PYTHON that bai." }
+    $setxOutput = & setx.exe NODE_USE_SYSTEM_CA 1 2>&1 | ForEach-Object { "$_" }
+    $setxExitCode = $LASTEXITCODE
+    if ($setxExitCode -ne 0) { throw "setx.exe NODE_USE_SYSTEM_CA that bai." }
 } catch {
     Loi "Khong luu duoc cau hinh moi truong cho nguoi dung hien tai: $($_.Exception.Message)"
 }
-Write-Host "Da dung Python co chu ky va kho chung chi Windows cho uv, npm va cac lan chay sau." -ForegroundColor Green
+$ErrorActionPreference = 'Stop'
 
 function Kiem-TraPython312($duongDan) {
     if (-not $duongDan -or -not (Test-Path -LiteralPath $duongDan -PathType Leaf)) { return $false }
@@ -105,11 +110,13 @@ function Dam-BaoPython312 {
         $oldErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = 'Continue'
         try {
-            & $winget.Source install --id Python.Python.3.12 -e --source winget --scope user --silent --accept-package-agreements --accept-source-agreements 2>&1 | Out-Host
+            $wingetOutput = & $winget.Source install --id Python.Python.3.12 -e --source winget --scope user --silent --accept-package-agreements --accept-source-agreements 2>&1 |
+                ForEach-Object { "$_" }
             $wingetExitCode = $LASTEXITCODE
         } finally {
             $ErrorActionPreference = $oldErrorActionPreference
         }
+        $wingetOutput | ForEach-Object { Write-Host "   $_" }
         if ($wingetExitCode -eq 0) {
             $python = Tim-Python312
             if ($python) { return $python }
@@ -128,16 +135,16 @@ function Dam-BaoPython312 {
 }
 
 function Chay-UvSync($uv, $python) {
-    $syncLines = @()
     $oldErrorActionPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     try {
         # Khong dung co --system-certs: uv ban cu khong biet co nay se bao loi. Bien moi truong UV_SYSTEM_CERTS / UV_NATIVE_TLS da du.
-        & $uv sync --python $python 2>&1 | Tee-Object -Variable syncLines
+        $syncLines = & $uv sync --python $python 2>&1 | ForEach-Object { "$_" }
         $script:UvSyncExitCode = $LASTEXITCODE
     } finally {
         $ErrorActionPreference = $oldErrorActionPreference
     }
+    $syncLines | ForEach-Object { Write-Host "   $_" }
     $script:UvSyncText = ($syncLines | Out-String)
 }
 
@@ -159,6 +166,7 @@ Write-Host "==============================================" -ForegroundColor Gre
 Write-Host "   $TenApp - CAI DAT LAN DAU (5-15 phut)" -ForegroundColor Green
 Write-Host "==============================================" -ForegroundColor Green
 Write-Host "Thu muc: $Root"
+Write-Host "Da dung Python co chu ky va kho chung chi Windows cho uv, npm va cac lan chay sau." -ForegroundColor Green
 
 if ($Root -match 'OneDrive') {
     Write-Host ""

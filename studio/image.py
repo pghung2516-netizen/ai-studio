@@ -187,6 +187,12 @@ def lenh_xoa_nen(a) -> None:
         from rembg import new_session, remove
     except Exception as e:
         raise LoiNguoiDung(f"Chưa cài xong bộ xóa nền ({e}). Hãy chạy lại CAI-DAT.bat.")
+    import os
+
+    thu_muc_mo_hinh = Path(os.environ.get("U2NET_HOME", ""))
+    if not (thu_muc_mo_hinh.exists() and any(thu_muc_mo_hinh.rglob(f"{a.mo_hinh}.onnx"))):
+        bao("⏳ Lần đầu dùng: đang tải mô hình xóa nền (~170MB). Mạng chậm có thể mất 5-10 phút, "
+            "chỉ tải một lần - không phải treo máy...")
     session = new_session(a.mo_hinh)
     outs = []
     for f in files:
