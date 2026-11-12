@@ -1,0 +1,19 @@
+[project]
+name = "ai-studio"
+version = "1.0.0"
+description = "Workspace sửa video, ảnh và viết content bằng Claude Code - dành cho người không biết IT"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "imageio-ffmpeg>=0.6",      # ffmpeg đóng gói sẵn (Windows/Mac), không cần cài riêng
+    "pillow>=11.0",              # xử lý ảnh
+    "pillow-heif>=0.21",         # đọc ảnh HEIC chụp từ iPhone
+    "numpy>=1.26",
+    "faster-whisper>=1.1",       # nghe giọng nói -> phụ đề (chạy offline)
+    "rembg[cpu]>=2.0.60",        # xóa nền ảnh (chạy offline)
+    "imageio>=2.34",             # cho skill slack-gif-creator
+    "pydantic>=2.0",             # cho skill capcut-cat-thong-minh
+    "pydantic-settings>=2.0",
+]
+
+[tool.uv]
+package = false

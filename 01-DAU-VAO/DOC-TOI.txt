@@ -1,0 +1,8 @@
+BỎ FILE GỐC VÀO ĐÂY
+====================
+
+Video, ảnh, nhạc, logo... bạn muốn chỉnh sửa → kéo thả vào thư mục này.
+Có thể tạo thư mục con cho từng dự án, ví dụ: 01-DAU-VAO\video-tet\
+
+Claude chỉ ĐỌC file ở đây, không bao giờ sửa hay xóa file gốc của bạn.
+Kết quả luôn nằm trong thư mục 02-THANH-PHAM.

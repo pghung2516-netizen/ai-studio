@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8",
+    "UV_LINK_MODE": "copy"
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(uv run python -m studio *)",
+      "Bash(uv run python .claude/skills/*)",
+      "Bash(uv sync*)",
+      "Bash(uv --version)",
+      "Bash(start *)",
+      "Bash(explorer *)",
+      "Bash(ls *)",
+      "Bash(dir *)",
+      "PowerShell(uv run python -m studio *)",
+      "PowerShell(uv run python .claude/skills/*)",
+      "PowerShell(uv sync*)",
+      "PowerShell(uv --version)",
+      "PowerShell(Invoke-Item *)",
+      "PowerShell(Start-Process *)",
+      "PowerShell(explorer *)",
+      "PowerShell(Get-ChildItem *)",
+      "Read(./**)",
+      "Edit(./02-THANH-PHAM/**)",
+      "Edit(./03-THUONG-HIEU/**)",
+      "Edit(./04-THU-VIEN-PROMPT/**)",
+      "WebSearch",
+      "WebFetch"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Edit(./01-DAU-VAO/**)",
+      "Bash(rm -rf *)",
+      "Bash(git push *)",
+      "Bash(git reset --hard*)",
+      "PowerShell(Remove-Item * -Recurse*)",
+      "PowerShell(git push *)",
+      "PowerShell(Format-*)"
+    ]
+  }
+}

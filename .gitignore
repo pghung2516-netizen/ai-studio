@@ -1,0 +1,32 @@
+# Môi trường & mô hình AI (máy nào tự cài lại bằng CAI-DAT.bat)
+.venv/
+.cache/
+__pycache__/
+*.pyc
+
+# Bí mật
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+CLAUDE.local.md
+
+# File của người dùng (nặng, riêng tư) - chỉ giữ file hướng dẫn
+01-DAU-VAO/*
+!01-DAU-VAO/DOC-TOI.txt
+02-THANH-PHAM/*
+!02-THANH-PHAM/.gitkeep
+03-THUONG-HIEU/*
+!03-THUONG-HIEU/thuong-hieu.md
+05-CONG-CU-THEM/*/
+assets/nhac-mau/*
+!assets/nhac-mau/DOC-TOI.txt
+
+# Tài liệu có bản quyền / riêng tư của người quản lý
+_tai-lieu-rieng/
+Mastering of AI Business*.pdf
+
+# Rác hệ điều hành
+.DS_Store
+Thumbs.db
+desktop.ini

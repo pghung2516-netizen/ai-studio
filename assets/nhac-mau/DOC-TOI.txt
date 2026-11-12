@@ -1,0 +1,12 @@
+NHẠC NỀN DÙNG CHUNG
+===================
+
+Bỏ vào đây những bản nhạc bạn ĐƯỢC PHÉP dùng (đã mua bản quyền hoặc miễn phí bản quyền),
+Claude sẽ dùng làm nhạc nền khi bạn nói "thêm nhạc nền" mà không đưa file nhạc.
+
+Nguồn nhạc miễn phí bản quyền:
+- YouTube Audio Library (studio.youtube.com → Thư viện âm thanh)
+- Pixabay Music (pixabay.com/music)
+- Thư viện nhạc thương mại có sẵn trong CapCut / TikTok (dùng khi đăng trên chính nền tảng đó)
+
+Tránh dùng nhạc ca sĩ nổi tiếng cho video bán hàng: dễ bị tắt tiếng hoặc khóa video.
