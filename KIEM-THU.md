@@ -71,5 +71,12 @@ Mỗi câu dưới đây phải chạy từ máy chưa cài gì thêm (để tes
 | `video-giai-thich` | "làm video hoạt hình 3 bước đặt hàng, dọc" | `manimpango.register_font` với font trong đường dẫn có dấu |
 | `blender-3d` | (cần cài Blender) "dựng ảnh 3D hộp quà màu đỏ" | `cmd /c uvx` trong `.mcp.json`; add-on "Install from Disk" trên Blender 4.2+ |
 
+### E. Lớp "app" (v1.2): icon, lối tắt, trình mở
+Sau khi `CAI-DAT.bat` chạy xong, kiểm tra và ghi lại kèm ảnh chụp màn hình:
+- Trên Desktop và trong Start Menu có 3 lối tắt: **AI Studio**, **AI Studio - Bỏ file vào đây**, **AI Studio - Thành phẩm**. Icon có đúng không? Tên có dấu có hiển thị đúng không?
+- PowerShell chạy ở chế độ nào? Chạy lệnh `$ExecutionContext.SessionState.LanguageMode` trong cửa sổ PowerShell thường. Nếu ra `ConstrainedLanguage` thì đây là máy bị hạn chế, lúc đó lối tắt thư mục sẽ là file `.url`, và **không có** lối tắt AI Studio.
+- Nhấp đúp **AI Studio**: Claude Desktop có mở không? Có nháy cửa sổ đen không? Lần đầu có mở `HUONG-DAN-NHANH.html` không? Nhấn Ctrl+V xem đường dẫn workspace có nằm sẵn trong clipboard không?
+- Máy **chưa cài** Claude Desktop: phải mở trang claude.com/download và trang hướng dẫn.
+
 ## Script kiểm thử làm gì
 `scripts/kiem-thu.py` tự tạo file mẫu trong `.cache\kiem-thu\Mẫu thử có dấu\` (video ngang/dọc, nhạc, ảnh, logo, phụ đề tiếng Việt, giọng nói TTS tiếng Anh), chạy ~33 ca phủ mọi lệnh `studio`, kiểm tra mã thoát + độ dài + khung hình + có/không tiếng, rồi xuất `BAO-CAO.md` (gọn, chỉ in 15 dòng cuối của ca lỗi) và `_XEM-MAT.jpg`. Kết quả nằm trong `.cache\` (không lên git, không làm rối `02-THANH-PHAM`).

@@ -76,3 +76,11 @@ Quy trình test trên Windows và gửi kết quả về Mac qua GitHub Issue: x
 - v1.0 — bản đầu tiên.
 - v1.1 (2026-11-13) — thêm 4 skill dựng video không cần quay: `video-dong-html` (HyperFrames/GSAP/three.js), `video-remotion`, `video-giai-thich` (Manim), `blender-3d` (Blender MCP). Bảng chọn công cụ trong CLAUDE.md, menu mới. Đã render thử trên Mac (chưa test Windows; `blender-3d` chưa test với Blender thật).
   - Còn chờ người quản lý duyệt: quyền tự chạy lệnh trong `.claude/settings.json` và file `.mcp.json` cho Blender (Claude không được tự sửa file cấu hình).
+- v1.1.1 (2026-11-13) — sửa issue #1: cài đặt trên máy bật Smart App Control và có antivirus quét HTTPS. Dùng Python có chữ ký từ python.org, kho chứng chỉ hệ thống (truststore, UV_SYSTEM_CERTS, NODE_USE_SYSTEM_CA), báo lỗi đúng nguyên nhân.
+- v1.2 (2026-11-13) — lớp "app" (hướng A: vẫn dùng Claude Desktop làm giao diện):
+  - Bộ icon `assets/icon/` (vẽ lại bằng `uv run python scripts/tao-icon.py`).
+  - `CAI-DAT.bat` tự tạo 3 lối tắt trên Desktop và Start Menu (`scripts/tao-loi-tat.ps1`).
+  - Trình mở `scripts/mo-ai-studio.ps1` (+ `MO-AI-STUDIO.bat`): mở Claude Desktop, chép sẵn đường dẫn workspace, lần đầu mở `HUONG-DAN-NHANH.html`.
+  - Các script chạy được cả khi PowerShell ở chế độ hạn chế (Constrained Language Mode, gặp trên máy bật Smart App Control).
+  - Tên app nằm ở biến `$TenApp` trong 3 script + icon + trang hướng dẫn.
+  - Chưa test trên Windows: xem mục E trong `KIEM-THU.md`.

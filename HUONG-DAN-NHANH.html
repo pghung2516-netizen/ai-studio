@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Studio – Bắt đầu</title>
+  <style>
+    @font-face { font-family: 'Be Vietnam Pro'; src: url('assets/fonts/BeVietnamPro-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Be Vietnam Pro'; src: url('assets/fonts/BeVietnamPro-SemiBold.ttf') format('truetype'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'Be Vietnam Pro'; src: url('assets/fonts/BeVietnamPro-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Be Vietnam Pro'; src: url('assets/fonts/BeVietnamPro-ExtraBold.ttf') format('truetype'); font-weight: 800; font-display: swap; }
+
+    :root {
+      --bg: #FBF8F4;
+      --card-bg: #FFFFFF;
+      --card-border: #EFE9E0;
+      --text-main: #1E1B2E;
+      --text-muted: #645D73;
+      --primary: #5B2EE5;
+      --accent: #FF6B4A;
+      --gradient: linear-gradient(135deg, #5B2EE5 0%, #FF6B4A 100%);
+      --gradient-soft: linear-gradient(135deg, rgba(91,46,229,0.08) 0%, rgba(255,107,74,0.08) 100%);
+      --chip-bg: #F3EFEA;
+      --chip-border: #E5DDD3;
+      --chip-hover: #ECE4DA;
+      --shadow: 0 4px 20px -2px rgba(30, 27, 46, 0.05), 0 2px 6px -1px rgba(30, 27, 46, 0.03);
+      --toast-bg: #1E1B2E;
+      --toast-text: #FFFFFF;
+      --badge-bg: rgba(91, 46, 229, 0.08);
+      --badge-text: #5B2EE5;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #13111C;
+        --card-bg: #1C1926;
+        --card-border: #2D273D;
+        --text-main: #F4F2F9;
+        --text-muted: #A199B3;
+        --gradient-soft: linear-gradient(135deg, rgba(91,46,229,0.16) 0%, rgba(255,107,74,0.16) 100%);
+        --chip-bg: #272235;
+        --chip-border: #3A334E;
+        --chip-hover: #332B47;
+        --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+        --toast-bg: #FFFFFF;
+        --toast-text: #13111C;
+        --badge-bg: rgba(91, 46, 229, 0.25);
+        --badge-text: #B49BFF;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 40px 16px 80px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+
+    /* Header */
+    .hero { text-align: center; margin-bottom: 36px; }
+    .logo-wrap { display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .logo-img { width: 72px; height: 72px; border-radius: 18px; object-fit: cover; box-shadow: 0 8px 20px -4px rgba(91, 46, 229, 0.3); }
+    .logo-fallback { display: none; width: 72px; height: 72px; border-radius: 18px; background: var(--gradient); color: #fff; font-size: 34px; align-items: center; justify-content: center; box-shadow: 0 8px 20px -4px rgba(91, 46, 229, 0.3); }
+    .badge { display: inline-block; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 999px; background: var(--badge-bg); color: var(--badge-text); margin-bottom: 12px; }
+    h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.25; }
+    .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-desc { font-size: 15.5px; color: var(--text-muted); max-width: 620px; margin: 0 auto; }
+
+    /* Titles & Cards */
+    .section-title { font-size: 20px; font-weight: 700; margin: 34px 0 16px; display: flex; align-items: center; gap: 10px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow); margin-bottom: 16px; }
+
+    /* Steps */
+    .steps-grid { display: grid; gap: 14px; }
+    .step-card { display: flex; gap: 18px; align-items: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow); }
+    .step-num { width: 44px; height: 44px; min-width: 44px; border-radius: 13px; background: var(--gradient); color: #FFF; font-size: 20px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 14px -2px rgba(91, 46, 229, 0.35); }
+    .step-content h3 { font-size: 16.5px; font-weight: 700; margin-bottom: 4px; }
+    .step-content p { font-size: 14px; color: var(--text-muted); margin-bottom: 6px; }
+    .step-tip { font-size: 13px; background: var(--gradient-soft); padding: 5px 11px; border-radius: var(--radius-sm); display: inline-block; color: var(--text-main); margin-top: 4px; }
+
+    /* Daily Workflow */
+    .workflow-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; text-align: center; }
+    .flow-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 16px 12px; box-shadow: var(--shadow); }
+    .flow-icon { font-size: 26px; margin-bottom: 6px; }
+    .flow-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .flow-sub { font-size: 12.5px; color: var(--text-muted); }
+
+    /* Chips */
+    .chips-label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; }
+    .chips-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { background: var(--chip-bg); border: 1px solid var(--chip-border); border-radius: 999px; padding: 9px 16px; font-size: 13.5px; font-weight: 500; font-family: inherit; color: var(--text-main); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s ease; }
+    .chip:hover { background: var(--chip-hover); border-color: var(--primary); transform: translateY(-1px); }
+    .chip:active { transform: translateY(1px); }
+    .chip .copy-icon { font-size: 12px; opacity: 0.6; }
+
+    /* 3 Desktop Icons */
+    .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .icon-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+    .icon-symbol { font-size: 30px; margin-bottom: 10px; }
+    .icon-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .icon-desc { font-size: 13px; color: var(--text-muted); flex-grow: 1; }
+
+    /* Safety Note */
+    .note-card { background: var(--gradient-soft); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start; margin-top: 22px; }
+    .note-icon { font-size: 26px; line-height: 1; }
+    .note-content h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
+    .note-content p { font-size: 13px; color: var(--text-main); margin-bottom: 4px; }
+    .note-content p:last-child { margin-bottom: 0; }
+
+    /* FAQ */
+    .faq-list { display: flex; flex-direction: column; gap: 10px; }
+    .faq-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 15px 18px; }
+    .faq-q { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .faq-a { font-size: 13px; color: var(--text-muted); }
+    .faq-a a { color: var(--primary); text-decoration: underline; font-weight: 600; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(30px); background: var(--toast-bg); color: var(--toast-text); padding: 10px 22px; border-radius: 999px; font-size: 13.5px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); opacity: 0; pointer-events: none; transition: all 0.25s cubic-bezier(0.16,1,0.3,1); z-index: 999; max-width: 90vw; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      .icons-grid, .workflow-flow { grid-template-columns: 1fr; }
+      h1 { font-size: 25px; }
+      body { padding: 24px 12px 60px; }
+      .step-card { padding: 16px 14px; gap: 12px; }
+      .step-num { width: 38px; height: 38px; min-width: 38px; font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="hero">
+      <div class="logo-wrap">
+        <img src="assets/icon/ai-studio.png" alt="AI Studio" class="logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+        <div id="logo-fallback" class="logo-fallback">🎬</div>
+      </div>
+      <div><span class="badge">Dành cho chủ shop & nhà sáng tạo nội dung</span></div>
+      <h1>Chào mừng bạn đến với <span class="gradient-text">AI Studio</span></h1>
+      <p class="hero-desc">Trợ lý hỗ trợ bạn tự động dựng video TikTok, xóa nền ảnh sản phẩm và viết bài bán hàng. Bạn chỉ cần nói tiếng Việt hằng ngày, không cần học kỹ thuật máy tính phức tạp.</p>
+    </header>
+
+    <!-- 1. Bắt đầu lần đầu -->
+    <section>
+      <h2 class="section-title">🚀 Bắt đầu lần đầu (Chỉ 3 bước)</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Mở biểu tượng AI Studio ngoài màn hình Desktop</h3>
+            <p>Nhấp đúp biểu tượng <strong>AI Studio</strong> trên màn hình máy tính. Ứng dụng Claude Desktop sẽ tự mở lên, đồng thời <strong>đường dẫn thư mục đã được tự động chép sẵn</strong> vào bộ nhớ tạm.</p>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Chọn thư mục trong tab Code</h3>
+            <p>Trong ứng dụng Claude, hãy đăng nhập tài khoản (yêu cầu gói Claude Pro trở lên). Bấm vào tab <strong>Code</strong> ở phía trên, bấm ô chọn thư mục dự án dưới ô chat, rồi nhấn <strong>Ctrl + V</strong> để dán đường dẫn đã chép.</p>
+            <div class="step-tip">💡 <strong>Mẹo:</strong> Claude Desktop sẽ tự ghi nhớ thư mục này cho các lần sau. Bạn cũng có thể lưu thành môi trường để lần tới chỉ cần bấm chọn.</div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Gõ menu và bấm Enter!</h3>
+            <p>Gõ chữ <strong>menu</strong> vào ô chat rồi bấm gửi. Trợ lý sẽ hiển thị bảng chọn những việc bạn có thể làm ngay.</p>
+            <div class="step-tip">✨ Khi Claude hiện hộp thoại xin phép chạy công cụ, bạn cứ yên tâm chọn <strong>Allow (Cho phép)</strong> nhé.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Dùng hằng ngày -->
+    <section>
+      <h2 class="section-title">⚡ Dùng hằng ngày</h2>
+      <div class="workflow-flow">
+        <div class="flow-item">
+          <div class="flow-icon">📥</div>
+          <div class="flow-title">1. Bỏ file gốc</div>
+          <div class="flow-sub">Bỏ ảnh, video vào thư mục <code>01-DAU-VAO</code> hoặc kéo thả thẳng vào khung chat</div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-icon">💬</div>
+          <div class="flow-title">2. Nhắn yêu cầu</div>
+          <div class="flow-sub">Nói điều bạn muốn bằng tiếng Việt tự nhiên hằng ngày</div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-icon">🎁</div>
+          <div class="flow-title">3. Nhận thành phẩm</div>
+          <div class="flow-sub">Kết quả xuất hiện ngay trong thư mục <code>02-THANH-PHAM</code> theo ngày</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chips-label">Bấm vào câu mẫu để sao chép nhanh và gửi cho trợ lý:</div>
+        <div class="chips-grid">
+          <button class="chip" onclick="copyPrompt('Cắt 15 giây đầu video này')">
+            ✂️ Cắt 15 giây đầu video này <span class="copy-icon">📋</span>
+          </button>
+          <button class="chip" onclick="copyPrompt('Đổi sang video dọc cho TikTok')">
+            📱 Đổi sang video dọc cho TikTok <span class="copy-icon">📋</span>
+          </button>
+          <button class="chip" onclick="copyPrompt('Làm phụ đề tiếng Việt')">
+            📝 Làm phụ đề tiếng Việt <span class="copy-icon">📋</span>
+          </button>
+          <button class="chip" onclick="copyPrompt('Xóa nền ảnh sản phẩm rồi đổi cỡ cho Shopee')">
+            🛍️ Xóa nền ảnh sản phẩm rồi đổi cỡ cho Shopee <span class="copy-icon">📋</span>
+          </button>
+          <button class="chip" onclick="copyPrompt('Làm video chữ chạy khuyến mãi 10 giây')">
+            🎉 Làm video chữ chạy khuyến mãi 10 giây <span class="copy-icon">📋</span>
+          </button>
+          <button class="chip" onclick="copyPrompt('Viết caption bán áo thun')">
+            ✍️ Viết caption bán áo thun <span class="copy-icon">📋</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Thư mục quan trọng -->
+    <section>
+      <h2 class="section-title">📂 3 Biểu tượng Desktop quan trọng</h2>
+      <div class="icons-grid">
+        <div class="icon-card">
+          <div class="icon-symbol"><img src="assets/icon/ai-studio.png" alt="" width="56" height="56" style="display:block;border-radius:14px" onerror="this.replaceWith(document.createTextNode('🖥️'))"></div>
+          <div class="icon-name">AI Studio</div>
+          <div class="icon-desc">Mở ứng dụng Claude Desktop và tự động chép sẵn đường dẫn thư mục làm việc để bạn dán vào khi cần.</div>
+        </div>
+        <div class="icon-card">
+          <div class="icon-symbol"><img src="assets/icon/dau-vao.png" alt="" width="56" height="56" style="display:block;border-radius:14px" onerror="this.replaceWith(document.createTextNode('📥'))"></div>
+          <div class="icon-name">AI Studio - Bỏ file vào đây</div>
+          <div class="icon-desc">Mở thư mục <code>01-DAU-VAO</code>. Nơi bạn bỏ video gốc, ảnh sản phẩm, bài nhạc. Trợ lý không bao giờ sửa hoặc xóa file gốc.</div>
+        </div>
+        <div class="icon-card">
+          <div class="icon-symbol"><img src="assets/icon/thanh-pham.png" alt="" width="56" height="56" style="display:block;border-radius:14px" onerror="this.replaceWith(document.createTextNode('🎁'))"></div>
+          <div class="icon-name">AI Studio - Thành phẩm</div>
+          <div class="icon-desc">Mở thư mục <code>02-THANH-PHAM</code>. Mọi video, hình ảnh và bài viết hoàn thiện đều được lưu ngăn nắp theo từng ngày.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lưu ý bảo mật & an toàn -->
+    <section>
+      <div class="note-card">
+        <div class="note-icon">🛡️</div>
+        <div class="note-content">
+          <h4>Lưu ý an toàn & bảo mật</h4>
+          <p><strong>Bảo vệ dữ liệu riêng tư:</strong> Tuyệt đối không gửi ảnh Căn cước công dân (CCCD), số tài khoản ngân hàng, mật khẩu hay số điện thoại riêng của khách hàng vào yêu cầu nhờ AI viết.</p>
+          <p><strong>Cửa sổ xin quyền:</strong> Khi Claude hỏi xin phép chạy công cụ (hộp thoại Allow), đây là hoạt động xử lý file an toàn ngay trên máy của bạn. Bạn hãy yên tâm bấm <strong>Allow (Cho phép)</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Gặp trục trặc? -->
+    <section>
+      <h2 class="section-title">❓ Gặp trục trặc?</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q">Chưa cài đặt ứng dụng Claude Desktop?</div>
+          <div class="faq-a">Bạn hãy tải ứng dụng chính thức tại <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a>. Lưu ý cần đăng nhập tài khoản có gói trả phí (Claude Pro trở lên) để dùng được tab Code.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Bấm biểu tượng ngoài Desktop nhưng không thấy gì mở ra?</div>
+          <div class="faq-a">Bạn mở thư mục làm việc của AI Studio và nhấp đúp trực tiếp vào file <code>MO-AI-STUDIO.bat</code>.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Công cụ báo lỗi hoặc kết quả chưa đúng ý?</div>
+          <div class="faq-a">Chỉ cần nhắn ngay với Claude trong khung chat: <em>"kiểm tra cài đặt giúp mình"</em>. Nếu muốn sửa video hay ảnh, bạn cứ góp ý tự nhiên như <em>"cho chữ to hơn"</em> hoặc <em>"nhạc nhỏ lại một chút"</em>.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast">✓ Đã chép câu lệnh!</div>
+
+  <script>
+    var toastTimeout;
+    function copyPrompt(text) {
+      var success = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text);
+          success = true;
+        }
+      } catch (err) {
+        success = false;
+      }
+      if (!success) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          success = document.execCommand('copy');
+          document.body.removeChild(ta);
+        } catch (e) {
+          success = false;
+        }
+      }
+      showToast(text);
+    }
+
+    function showToast(text) {
+      var toast = document.getElementById('toast');
+      toast.textContent = '✓ Đã chép: "' + text + '"';
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2200);
+    }
+  </script>
+</body>
+</html>

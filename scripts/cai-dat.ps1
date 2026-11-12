@@ -2,6 +2,7 @@
 # Chay bang cach nhap dup CAI-DAT.bat o thu muc goc.
 # Thong bao viet khong dau de khong bi loi font tren cua so dong lenh Windows.
 
+$TenApp = 'AI Studio'
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $Root = Split-Path -Parent $PSScriptRoot
@@ -23,10 +24,14 @@ function Loi($msg) {
 }
 
 try {
-    [Environment]::SetEnvironmentVariable('UV_SYSTEM_CERTS', '1', 'User')
-    [Environment]::SetEnvironmentVariable('UV_PYTHON_DOWNLOADS', 'never', 'User')
-    [Environment]::SetEnvironmentVariable('UV_NO_MANAGED_PYTHON', '1', 'User')
-    [Environment]::SetEnvironmentVariable('NODE_USE_SYSTEM_CA', '1', 'User')
+    & setx.exe UV_SYSTEM_CERTS 1 >$null 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "setx.exe UV_SYSTEM_CERTS that bai." }
+    & setx.exe UV_PYTHON_DOWNLOADS never >$null 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "setx.exe UV_PYTHON_DOWNLOADS that bai." }
+    & setx.exe UV_NO_MANAGED_PYTHON 1 >$null 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "setx.exe UV_NO_MANAGED_PYTHON that bai." }
+    & setx.exe NODE_USE_SYSTEM_CA 1 >$null 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "setx.exe NODE_USE_SYSTEM_CA that bai." }
 } catch {
     Loi "Khong luu duoc cau hinh moi truong cho nguoi dung hien tai: $($_.Exception.Message)"
 }
@@ -70,7 +75,7 @@ function Tim-Python312 {
 function Cai-PythonBangInstaller {
     $pythonVersion = '3.12.10'
     $installerUrl = "https://www.python.org/ftp/python/$pythonVersion/python-$pythonVersion-amd64.exe"
-    $installerPath = Join-Path ([IO.Path]::GetTempPath()) "python-$pythonVersion-amd64.exe"
+    $installerPath = Join-Path $env:TEMP "python-$pythonVersion-amd64.exe"
     Write-Host "   Dang tai Python $pythonVersion chinh thuc tu python.org..."
     try {
         Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath -UseBasicParsing
@@ -151,7 +156,7 @@ function Loi-UvSync($noiDung) {
 }
 
 Write-Host "==============================================" -ForegroundColor Green
-Write-Host "   AI STUDIO - CAI DAT LAN DAU (5-15 phut)" -ForegroundColor Green
+Write-Host "   $TenApp - CAI DAT LAN DAU (5-15 phut)" -ForegroundColor Green
 Write-Host "==============================================" -ForegroundColor Green
 Write-Host "Thu muc: $Root"
 
@@ -231,8 +236,18 @@ if ($ok) {
     Write-Host "Co muc chua on (xem cac dong X o tren). Mo Claude va noi: 'kiem tra cai dat giup minh'." -ForegroundColor Yellow
 }
 Write-Host ""
+try {
+    $loiTatScript = Join-Path $PSScriptRoot 'tao-loi-tat.ps1'
+    if (Test-Path -LiteralPath $loiTatScript -PathType Leaf) {
+        & $loiTatScript
+    } else {
+        Write-Host "Chua tim thay script tao loi tat. Ban van co the dung MO-AI-STUDIO.bat." -ForegroundColor Yellow
+    }
+} catch {
+    Write-Host "Khong tao duoc loi tat. Ban van co the dung MO-AI-STUDIO.bat." -ForegroundColor Yellow
+}
+Write-Host ""
 Write-Host "BUOC TIEP THEO:"
-Write-Host "  1. Mo ung dung Claude (Claude Desktop), chon tab 'Code'."
-Write-Host "  2. Chon thu muc nay: $Root"
-Write-Host "  3. Go: menu"
+Write-Host "  Nhap dup bieu tuong '$TenApp' tren Desktop."
+Write-Host "  Can Claude Desktop (tab Code) va goi Claude tra phi."
 Write-Host ""

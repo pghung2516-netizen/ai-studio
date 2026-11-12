@@ -1,88 +1,65 @@
-# 🎬 AI STUDIO — Hướng dẫn bắt đầu (dành cho người không rành máy tính)
+# 🎬 AI Studio — Hướng dẫn bắt đầu
 
-Workspace này biến ứng dụng **Claude** thành trợ lý biên tập video, sửa ảnh và viết content cho bạn.
-Bạn **chỉ cần nói chuyện bằng tiếng Việt** — không cần biết lập trình hay gõ lệnh.
+> 💡 **Bản xem nhanh đẹp mắt:** Mở file [HUONG-DAN-NHANH.html](HUONG-DAN-NHANH.html) bằng trình duyệt để xem bản hướng dẫn minh họa trực quan, có sẵn nút bấm sao chép nhanh câu lệnh mẫu.
 
----
-
-## Bạn cần có
-- Máy tính **Windows 10 hoặc 11**, còn trống ít nhất **5 GB** ổ đĩa.
-- Tài khoản **Claude Pro** trở lên (đăng ký tại claude.ai).
-- Mạng Internet ổn định cho lần cài đặt đầu tiên.
+AI Studio biến ứng dụng **Claude Desktop** thành trợ lý cá nhân giúp bạn dựng video TikTok, xóa nền ảnh sản phẩm và viết bài bán hàng. Bạn **chỉ cần nói chuyện bằng tiếng Việt hằng ngày** — không cần biết lập trình hay kỹ thuật máy tính.
 
 ---
 
-## Cài đặt lần đầu (khoảng 15–20 phút, chỉ làm 1 lần)
+## 1. Cài đặt lần đầu (Chỉ làm 1 lần)
 
-### Bước 1 — Cài ứng dụng Claude
-1. Vào **claude.ai/download** → bấm **Download for Windows**.
-2. Mở file vừa tải → cài đặt → **đăng nhập** tài khoản Claude của bạn.
-
-### Bước 2 — Lấy thư mục workspace về máy
-1. Mở đường link GitHub mà người quản lý gửi cho bạn (đăng nhập GitHub bằng tài khoản đã được mời).
-2. Bấm nút xanh **`<> Code`** → chọn **Download ZIP**.
-3. Mở thư mục *Downloads* → bấm chuột phải vào file ZIP → **Extract All… (Giải nén tất cả)**.
-4. Đổi tên thư mục vừa giải nén thành **`AI-Studio`** và **kéo nó vào ổ `C:`** → bạn có `C:\AI-Studio`.
-   > ⚠️ Không để trong *Desktop* hoặc *Documents* nếu máy bạn bật OneDrive — video nặng sẽ bị đồng bộ, rất chậm.
-
-### Bước 3 — Nhấp đúp file `CAI-DAT.bat`
-1. Mở `C:\AI-Studio` → **nhấp đúp `CAI-DAT.bat`**.
-2. Nếu Windows hiện khung xanh *"Windows protected your PC"* → bấm **More info** → **Run anyway**.
-3. Một cửa sổ đen hiện chữ chạy — **cứ để nó tự chạy** (5–15 phút, tùy mạng). Đừng tắt.
-4. Khi thấy chữ **XONG! Workspace da san sang** → bấm phím bất kỳ để đóng.
-
-### Bước 4 — Mở workspace trong Claude
-1. Mở ứng dụng **Claude** → chọn tab **Code** (phía trên).
-2. Bấm chọn thư mục → chọn **`C:\AI-Studio`**.
-3. Nếu Claude hỏi *"Do you trust the files in this folder?" / "Tin tưởng thư mục này?"* → bấm **Yes / Trust** (bắt buộc — có bước này Claude mới dùng được bộ công cụ có sẵn mà không hỏi đi hỏi lại).
-4. Gõ: **`menu`** rồi Enter. Claude sẽ chào và cho bạn xem những việc làm được. 🎉
-
-> Thỉnh thoảng Claude hỏi *"Allow / Cho phép ... ?"* khi chạy một công cụ mới → bấm **Allow** (hoặc *Allow always* nếu có). Đó là Claude xin phép dùng công cụ ngay trên máy bạn.
+1. Tải và cài đặt ứng dụng **Claude Desktop** tại [claude.com/download](https://claude.com/download) (yêu cầu tài khoản trả phí **Claude Pro** trở lên để dùng tab Code).
+2. Nhấp đúp vào file **`CAI-DAT.bat`** trong thư mục này.
+3. Để máy tự chạy khoảng 5–15 phút. Khi hoàn tất, màn hình Desktop của bạn sẽ xuất hiện **3 biểu tượng tiện ích**:
+   - 🖥️ **AI Studio**: Mở nhanh Claude Desktop và tự động chép sẵn đường dẫn thư mục làm việc.
+   - 📥 **AI Studio - Bỏ file vào đây**: Mở nhanh thư mục `01-DAU-VAO`.
+   - 🎁 **AI Studio - Thành phẩm**: Mở nhanh thư mục `02-THANH-PHAM` (kết quả sắp xếp theo từng ngày).
 
 ---
 
-## Dùng hằng ngày (3 bước)
+## 2. Bắt đầu lần đầu tiên
 
-1. **Bỏ file** (video, ảnh, nhạc, logo) vào thư mục **`01-DAU-VAO`** — hoặc kéo thả thẳng vào khung chat.
-2. **Nói việc bạn muốn**, ví dụ:
-   - *"Cắt video ban-hang.mp4 lấy từ giây 5 đến giây 35, đổi sang dọc cho TikTok rồi thêm phụ đề."*
-   - *"Xóa nền 10 ảnh sản phẩm trong thư mục ao-thun, để nền trắng cho Shopee."*
-   - *"Làm video 15 giây từ 5 tấm ảnh này, có chữ giới thiệu và nhạc nền."*
-   - *"Viết 3 caption Facebook bán nến thơm, giọng nhẹ nhàng."*
-   - *"Viết prompt để Gemini tạo ảnh người mẫu mặc chiếc áo này."*
-   - *"Xem video này có gì cần sửa để nhiều view hơn không."*
-3. **Nhận kết quả** trong thư mục **`02-THANH-PHAM`** (chia theo ngày). Claude sẽ tự mở thư mục cho bạn — hoặc nhấp đúp **`MO-THANH-PHAM.bat`**.
-
-💡 **Làm 1 lần cho đáng:** gõ *"thiết lập thương hiệu"* — Claude hỏi bạn vài câu về shop (tên, màu, giọng văn, logo) để mọi content và thiết kế sau này đúng chất của bạn.
+1. **Nhấp đúp biểu tượng `AI Studio` ngoài Desktop:**
+   Ứng dụng Claude Desktop sẽ mở lên. Đồng thời, đường dẫn thư mục làm việc đã được **tự động chép sẵn vào bộ nhớ tạm** (clipboard).
+2. **Chọn thư mục trong tab Code:**
+   - Trong Claude Desktop, đăng nhập tài khoản rồi bấm chọn tab **Code** (phía trên).
+   - Bấm vào ô chọn thư mục dự án dưới khung chat.
+   - Nhấn **Ctrl + V** vào thanh địa chỉ để dán đường dẫn đã chép, rồi chọn thư mục này.
+   > 💡 **Mẹo:** Claude Desktop sẽ tự ghi nhớ thư mục này cho các lần sau. Bạn cũng có thể tạo môi trường đã lưu để các lần tiếp theo chỉ cần bấm chọn.
+3. **Bắt đầu làm việc:**
+   - Gõ chữ **`menu`** vào khung chat rồi bấm Enter. Trợ lý sẽ hiển thị bảng chức năng để bạn lựa chọn.
+   - Nếu Claude hiện thông báo xin quyền thực thi công cụ, bạn cứ yên tâm bấm **Allow (Cho phép)**.
 
 ---
 
-## Các thư mục
+## 3. Dùng hằng ngày (3 bước đơn giản)
 
-| Thư mục | Ý nghĩa |
+1. **Bỏ file gốc** (video thô, ảnh sản phẩm, âm thanh, logo):
+   Thả vào biểu tượng **`AI Studio - Bỏ file vào đây`** (thư mục `01-DAU-VAO`), hoặc kéo thả trực tiếp vào ô chat của Claude. File gốc luôn được giữ an toàn tuyệt đối.
+2. **Nói việc bạn muốn làm bằng tiếng Việt**, ví dụ:
+   - *"Cắt 15 giây đầu video này"*
+   - *"Đổi sang video dọc cho TikTok"*
+   - *"Làm phụ đề tiếng Việt"*
+   - *"Xóa nền ảnh sản phẩm rồi đổi cỡ cho Shopee"*
+   - *"Làm video chữ chạy khuyến mãi 10 giây"*
+   - *"Viết caption bán áo thun"*
+3. **Nhận kết quả:**
+   Bấm vào biểu tượng **`AI Studio - Thành phẩm`** ngoài Desktop (thư mục `02-THANH-PHAM`). Mọi video, hình ảnh và bài viết hoàn thiện đều được lưu tự động theo từng ngày (`YYYY-MM-DD`).
+
+---
+
+## 4. Lưu ý an toàn & bảo mật
+
+- **Không gửi thông tin nhạy cảm:** Tuyệt đối không đưa thẻ Căn cước công dân (CCCD), số tài khoản ngân hàng, mật khẩu hay số điện thoại riêng của khách hàng vào yêu cầu nhờ AI viết.
+- **Cửa sổ xin quyền:** Khi Claude hỏi *"Allow / Cho phép"*, đây là hoạt động bình thường để trợ lý xử lý file trực tiếp ngay trên máy tính của bạn. Hãy bấm **Allow**.
+
+---
+
+## 5. Gặp trục trặc?
+
+| Vấn đề | Cách xử lý |
 |---|---|
-| `01-DAU-VAO` | Bạn bỏ file gốc vào đây. Claude **không bao giờ** sửa/xóa file gốc. |
-| `02-THANH-PHAM` | Kết quả, chia theo ngày. |
-| `03-THUONG-HIEU` | Thông tin shop, logo, màu sắc của bạn. |
-| `04-THU-VIEN-PROMPT` | Mẫu câu lệnh tạo ảnh/video AI và mẫu content. |
-| Các thư mục khác | Phần máy móc — không cần mở. |
-
----
-
-## Gặp trục trặc?
-
-| Chuyện gì xảy ra | Làm gì |
-|---|---|
-| Claude báo thiếu công cụ / lỗi lạ | Gõ: **"kiểm tra cài đặt giúp mình"** — Claude tự sửa. |
-| Cửa sổ `CAI-DAT.bat` báo LỖI | Kiểm tra mạng (thử phát 4G từ điện thoại), chạy lại. Vẫn lỗi → mở Claude, gõ *"cài đặt bị lỗi"*. |
-| Phụ đề / xóa nền lần đầu rất chậm | Bình thường — máy đang tải mô hình AI (1 lần). |
-| Windows Security cảnh báo `uv.exe` hoặc `ffmpeg` | Bấm **Allow / Cho phép** — đây là công cụ của workspace. |
-| Video ra không như ý | Nói cụ thể điều chưa ưng: *"chữ to hơn"*, *"nhạc nhỏ lại"*, *"cắt sớm hơn 2 giây"*. |
-| Muốn cập nhật bản mới | Hỏi người quản lý, hoặc gõ *"cập nhật workspace"*. |
-
----
-
-## Lưu ý an toàn
-- Không đưa **CCCD, số tài khoản, mật khẩu, thông tin khách hàng** vào nội dung nhờ AI viết.
-- Nhạc nền video bán hàng: dùng nhạc **miễn phí bản quyền** (YouTube Audio Library, Pixabay) hoặc nhạc có sẵn trong TikTok/CapCut.
-- Ảnh/video AI tạo ra: không giả mạo người thật hay thương hiệu khác.
+| Chưa cài đặt Claude Desktop | Tải ứng dụng chính thức tại [claude.com/download](https://claude.com/download) và đăng nhập gói Claude Pro trở lên. |
+| Bấm biểu tượng ngoài Desktop không chạy | Mở thư mục này và nhấp đúp trực tiếp vào file **`MO-AI-STUDIO.bat`**. |
+| Báo lỗi hoặc cần kiểm tra công cụ | Nhắn vào khung chat: **"kiểm tra cài đặt giúp mình"** — trợ lý sẽ tự động kiểm tra và hướng dẫn khắc phục. |
+| Video hoặc ảnh chưa đúng ý | Bạn chỉ cần nói cụ thể: *"chữ to hơn"*, *"nhạc nhỏ lại"*, *"cắt sớm hơn 2 giây"*. |
