@@ -16,6 +16,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "rembg", extra = ["cpu"] },
+    { name = "truststore" },
 ]
 
 [package.metadata]
@@ -29,6 +30,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.0" },
     { name = "pydantic-settings", specifier = ">=2.0" },
     { name = "rembg", extras = ["cpu"], specifier = ">=2.0.60" },
+    { name = "truststore", specifier = ">=0.10" },
 ]
 
 [[package]]

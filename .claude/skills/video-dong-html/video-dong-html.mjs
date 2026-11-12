@@ -16,11 +16,81 @@ function loi(msg) { console.error("LOI: " + msg); process.exit(2); }
 if (!fs.existsSync(path.join(nm, "hyperframes"))) loi("Chưa cài HyperFrames. Làm theo mục 'Cài đặt' trong SKILL.md.");
 
 const ext = process.platform === "win32" ? ".exe" : "";
+
+function findOnPath(bin) {
+  try {
+    const cmd = process.platform === "win32" ? "where" : "which";
+    const res = spawnSync(cmd, [bin], { encoding: "utf8" });
+    if (res.status === 0 && res.stdout) {
+      const first = res.stdout.trim().split(/\r?\n/)[0]?.trim();
+      if (first && fs.existsSync(first)) return first;
+    }
+  } catch {}
+  return null;
+}
+
+function findImageioFfmpeg() {
+  const cacheFile = path.join(root, ".cache", "imageio-ffmpeg-path.txt");
+  try {
+    if (fs.existsSync(cacheFile)) {
+      const p = fs.readFileSync(cacheFile, "utf8").trim();
+      if (p && fs.existsSync(p)) return p;
+    }
+  } catch {}
+  try {
+    const res = spawnSync("uv", ["run", "python", "-c", "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    if (res.status === 0 && res.stdout) {
+      const p = res.stdout.trim().split(/\r?\n/)[0]?.trim();
+      if (p && fs.existsSync(p)) {
+        try {
+          fs.mkdirSync(path.join(root, ".cache"), { recursive: true });
+          fs.writeFileSync(cacheFile, p, "utf8");
+        } catch {}
+        return p;
+      }
+    }
+  } catch {}
+  return null;
+}
+
+let ffmpegPath = process.env.HYPERFRAMES_FFMPEG_PATH && fs.existsSync(process.env.HYPERFRAMES_FFMPEG_PATH)
+  ? process.env.HYPERFRAMES_FFMPEG_PATH
+  : (process.env.HYPERFRAMES_FFMPEG_PATH || null);
+if (!ffmpegPath) ffmpegPath = findOnPath("ffmpeg");
+if (!ffmpegPath) ffmpegPath = findImageioFfmpeg();
+if (!ffmpegPath) {
+  const staticFfmpeg = path.join(nm, "ffmpeg-static", "ffmpeg" + ext);
+  if (fs.existsSync(staticFfmpeg)) ffmpegPath = staticFfmpeg;
+}
+
+let ffprobePath = process.env.HYPERFRAMES_FFPROBE_PATH && fs.existsSync(process.env.HYPERFRAMES_FFPROBE_PATH)
+  ? process.env.HYPERFRAMES_FFPROBE_PATH
+  : (process.env.HYPERFRAMES_FFPROBE_PATH || null);
+if (!ffprobePath) ffprobePath = findOnPath("ffprobe");
+if (!ffprobePath) {
+  const staticFfprobe = path.join(nm, "ffprobe-static", "bin", process.platform, process.arch, "ffprobe" + ext);
+  if (fs.existsSync(staticFfprobe)) ffprobePath = staticFfprobe;
+}
+
+const pathDirs = [];
+if (ffmpegPath) pathDirs.push(path.dirname(ffmpegPath));
+if (ffprobePath) pathDirs.push(path.dirname(ffprobePath));
+if (process.env.PATH) pathDirs.push(...process.env.PATH.split(path.delimiter));
+pathDirs.push(path.join(nm, "ffmpeg-static"));
+pathDirs.push(path.join(nm, "ffprobe-static", "bin", process.platform, process.arch));
+const uniquePath = [...new Set(pathDirs.filter(Boolean))].join(path.delimiter);
+
 const env = {
   ...process.env,
-  HYPERFRAMES_NO_TELEMETRY: "1", DO_NOT_TRACK: "1", HYPERFRAMES_SKIP_SKILLS: "1",
-  PATH: [path.join(nm, "ffmpeg-static"), path.join(nm, "ffprobe-static", "bin", process.platform, process.arch), process.env.PATH].join(path.delimiter),
-  HYPERFRAMES_FFMPEG_PATH: path.join(nm, "ffmpeg-static", "ffmpeg" + ext),
+  HYPERFRAMES_NO_TELEMETRY: "1",
+  DO_NOT_TRACK: "1",
+  HYPERFRAMES_SKIP_SKILLS: "1",
+  PATH: uniquePath,
+  ...(ffmpegPath ? { HYPERFRAMES_FFMPEG_PATH: ffmpegPath } : {}),
+  ...(ffprobePath ? { HYPERFRAMES_FFPROBE_PATH: ffprobePath } : {}),
 };
 const cli = path.join(nm, "hyperframes", "bin", "hyperframes.mjs");
 const hf = (cwd, a) => spawnSync(process.execPath, [cli, ...a], { cwd, env, stdio: "inherit" }).status;

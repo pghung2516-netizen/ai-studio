@@ -126,7 +126,7 @@ KIEU = {
 def dot_phu_de(video: Path, srt: Path, kieu: str, vi_tri: str, co: str, in_hoa: bool) -> Path:
     info = doc_thong_tin(video)
     doc = info.cao > info.rong
-    size = {"nho": 0.8, "vua": 1.0, "lon": 1.25}[co] * (15 if doc else 17)
+    size = {"nho": 0.8, "vua": 1.0, "lon": 1.25}[co] * (15 if doc else 22)
     align = {"duoi": 2, "giua": 5, "tren": 8}[vi_tri]
     margin = (70 if doc else 18) if vi_tri == "duoi" else (40 if vi_tri == "tren" else 0)
     style = f"FontName={FONT_TEN},FontSize={size:.0f},{KIEU[kieu]},Alignment={align},MarginV={margin},MarginL=20,MarginR=20"

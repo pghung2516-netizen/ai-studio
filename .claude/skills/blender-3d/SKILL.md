@@ -25,6 +25,7 @@ Claude điều khiển Blender đang mở trên máy người dùng: tạo hộp
 Báo trước: "mình cài Blender, khoảng 5–10 phút, tải gần 400 MB nhé".
 1. **Blender** (miễn phí, cần bản 3.0 trở lên; nên dùng 4.2 LTS trở lên): kiểm tra đã có chưa bằng PowerShell `Get-ChildItem "C:\Program Files\Blender Foundation" -ErrorAction SilentlyContinue`. Chưa có → chạy `winget install --id BlenderFoundation.Blender -e` (bản mới nhất; nếu winget lỗi, mở `https://www.blender.org/download/` cho người dùng bấm tải và cài "Next, Next"). Cần trống ~1,5 GB ổ đĩa.
 2. **Máy chủ MCP**: workspace đã có sẵn trong `.mcp.json` (tên `blender`). Lần đầu mở Claude Code sẽ hỏi "dùng máy chủ blender không?" → người dùng chọn **Có/Yes**, sau đó **thoát hẳn Claude Code và mở lại**. Chạy lần đầu cần mạng (tải ~30 MB).
+   - *Lưu ý Windows*: Các biến môi trường `UV_SYSTEM_CERTS=1`, `UV_PYTHON_DOWNLOADS=never`, `UV_NO_MANAGED_PYTHON=1` giúp `uvx` dùng Python 3.12 từ python.org (có chữ ký số). Kiểm tra: `uv python find 3.12` phải in ra đường dẫn dưới `AppData\Local\Programs\Python\Python312`.
 3. **Add-on trong Blender**: thử tự cài trước bằng `uvx mcp-for-blender@2.2.8 install-addon`. Nếu không được, dùng file có sẵn `.claude/skills/blender-3d/addon/blender_mcp.py` và hướng dẫn người dùng (mở thư mục đó ra cho họ):
    - Mở Blender → menu **Edit → Preferences → Add-ons**.
    - Bản 4.2 trở lên: bấm mũi tên nhỏ ở góc trên bên phải → **Install from Disk…**. Bản cũ hơn: nút **Install…**.
@@ -63,6 +64,17 @@ Gọi `get_addon_status`. Có phiên bản Blender/add-on → tốt. Báo lỗi 
 | Ảnh ra đen / quá tối / sản phẩm lọt khỏi khung | Dùng `look` xem camera; tăng `power` đèn, lùi `distance` camera. |
 | Báo "Rejected by safe mode" | Viết lại code theo lời nhắn (không dùng `os`, `open`, mạng). Không tắt chế độ an toàn. |
 | Lỗi `BLENDER_EEVEE_NEXT` / tên engine / `fcurves` | Hàm trong `product_scene.py` đã thử nhiều tên; vẫn lỗi thì xem số bản Blender (`get_addon_status`) và sửa nhẹ lệnh gọi. |
+
+### Lỗi trên Windows (Smart App Control, diệt virus)
+- **Lỗi chứng chỉ khi chạy `uvx`** (`CERTIFICATE_VERIFY_FAILED`, `UnknownIssuer`): Do trình diệt virus (như Avast) quét HTTPS. Đảm bảo biến `UV_SYSTEM_CERTS=1` đã được thiết lập. Tạm đặt trong PowerShell hiện tại: `$env:UV_SYSTEM_CERTS='1'` rồi thử lại. Biện pháp cuối: nhờ người dùng tạm dừng "Web Shield / Quét HTTPS" của diệt virus trong lúc cài.
+- **Lỗi 4551 / "Application Control policy has blocked this file"**:
+  - Do Smart App Control chặn bản Python chưa ký số do uv tự tải về.
+  - Cách xử lý: Cài bản Python 3.12 chính thức từ python.org (đã có chữ ký số) và đảm bảo các biến `UV_NO_MANAGED_PYTHON=1`, `UV_PYTHON_DOWNLOADS=never`. Kiểm tra:
+    ```powershell
+    uv python find 3.12
+    ```
+    Kết quả phải in ra đường dẫn dưới `AppData\Local\Programs\Python\Python312`.
+  - **Tuyệt đối không** khuyên người dùng tắt Smart App Control (không thể bật lại nếu không cài lại Windows).
 
 ## Cập nhật / gỡ
 Cập nhật: `uvx mcp-for-blender@latest update` rồi cập nhật file add-on trong thư mục skill (ghi chú lại bản đã thử). Gỡ: tắt add-on trong Preferences; xóa mục `blender` khỏi `.mcp.json`. Giấy phép MIT (xem `addon/LICENSE`); điều khoản dữ liệu ở `addon/TERMS_AND_CONDITIONS.md`.

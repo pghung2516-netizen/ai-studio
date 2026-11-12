@@ -3,7 +3,9 @@
   "env": {
     "PYTHONUTF8": "1",
     "PYTHONIOENCODING": "utf-8",
-    "UV_LINK_MODE": "copy"
+    "UV_LINK_MODE": "copy",
+    "UV_SYSTEM_CERTS": "1",
+    "NODE_USE_SYSTEM_CA": "1"
   },
   "permissions": {
     "defaultMode": "acceptEdits",

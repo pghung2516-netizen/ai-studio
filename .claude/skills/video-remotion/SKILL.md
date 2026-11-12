@@ -81,3 +81,10 @@ node scripts/render-batch.mjs "..\..\.cache\remotion-work\viec\san-pham.json" ".
 | Chạy chậm/đơ máy | Thêm `--concurrency=2` vào lệnh `npx remotion render`; đóng bớt chương trình |
 | "Cannot find module" | Chạy lại `npm install` trong `05-CONG-CU-THEM\remotion` |
 | Máy cài chậm do diệt virus chặn | Báo người dùng thêm thư mục workspace vào ngoại lệ Windows Security |
+
+### Lỗi trên Windows (Smart App Control, diệt virus)
+- **Lỗi chứng chỉ khi `npm install` hoặc tải Chrome Headless Shell** (`CERTIFICATE_VERIFY_FAILED`, `UNABLE_TO_GET_ISSUER_CERT_LOCALLY`, `UnknownIssuer`): Do trình diệt virus (như Avast) quét HTTPS. Đảm bảo biến môi trường `NODE_USE_SYSTEM_CA=1` (Node ≥ 22.15). Tạm đặt trong PowerShell hiện tại: `$env:NODE_USE_SYSTEM_CA='1'` rồi chạy lại lệnh. Biện pháp cuối: nhờ người dùng tạm dừng "Web Shield / Quét HTTPS" của diệt virus chỉ trong lúc tải.
+- **Lỗi 4551 / "Application Control policy" (Smart App Control chặn file chưa ký)**:
+  - File có thể bị chặn: file nhị phân `@remotion/compositor-win32-x64-msvc` và `Chrome Headless Shell`.
+  - Cách xử lý: Nếu Remotion compositor bị chặn, phía người dùng không thể tự khắc phục trực tiếp → báo cho người quản trị workspace (workspace admin) và chuyển sang dùng skill `video-dong-html` (HyperFrames) để tạo video thay thế.
+  - **Tuyệt đối không** bảo người dùng tắt Smart App Control (không thể bật lại nếu không cài lại Windows).

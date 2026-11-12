@@ -76,6 +76,17 @@ npx hyperframes telemetry disable
 | Hết bộ nhớ (RAM < 4 GB trống) | Tắt bớt phần mềm; thêm `-w 1` vào lệnh render |
 | Muốn chạy tay | `cd <dự án>` rồi `node ..\..\..\05-CONG-CU-THEM\hyperframes\node_modules\hyperframes\bin\hyperframes.mjs render -o <đường dẫn.mp4>` (đặt PATH có ffmpeg-static trước) |
 
+### Lỗi trên Windows (Smart App Control, diệt virus)
+- **Lỗi chứng chỉ khi `npm install` hoặc tải Chromium** (`CERTIFICATE_VERIFY_FAILED`, `UNABLE_TO_GET_ISSUER_CERT_LOCALLY`, `UnknownIssuer`): Do trình diệt virus (như Avast) quét HTTPS. Đảm bảo biến môi trường `NODE_USE_SYSTEM_CA=1` (Node ≥ 22.15). Tạm đặt trong PowerShell hiện tại: `$env:NODE_USE_SYSTEM_CA='1'` rồi thử lại. Biện pháp cuối: nhờ người dùng tạm dừng "Web Shield / Quét HTTPS" của diệt virus chỉ trong lúc tải.
+- **Lỗi 4551 / "Application Control policy" (Smart App Control chặn file chưa ký)**:
+  - File có thể bị chặn: `ffmpeg-static` và `ffprobe-static` trong `05-CONG-CU-THEM/hyperframes/node_modules/`.
+  - Cách xử lý: Script `video-dong-html.mjs` tự động tìm ffmpeg theo thứ tự: biến môi trường → PATH hệ thống → ffmpeg có sẵn của gói `imageio-ffmpeg` trong workspace (đã ký, không bị chặn) → mới đến `ffmpeg-static`. Nếu `ffprobe-static` bị chặn, cài ffmpeg/ffprobe chuẩn có chữ ký vào hệ thống:
+    ```powershell
+    winget install --id Gyan.FFmpeg.Essentials -e --source winget
+    ```
+    Lệnh này đưa cả `ffmpeg` và `ffprobe` lên PATH, script sẽ tự nhận diện.
+  - **Tuyệt đối không** khuyên người dùng tắt Smart App Control (tắt là vĩnh viễn, không bật lại được nếu không cài lại Windows).
+
 Telemetry: HyperFrames mặc định có thể gửi thống kê ẩn danh; script đã tắt (`HYPERFRAMES_NO_TELEMETRY=1`). Dựng hình chạy hoàn toàn trên máy, không gửi file lên web.
 
 ## 6. Giấy phép (nhắc khi cần)

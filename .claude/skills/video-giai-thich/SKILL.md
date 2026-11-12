@@ -24,6 +24,7 @@ uv run --no-project --python 3.12 --with manim==0.22.1 manim --version
 ```
 - In ra `Manim Community v0.22.1` là xong. **Lần đầu mất 1–3 phút** vì tải ~150–250 MB thư viện (báo trước: "mình cài công cụ hoạt hình, khoảng 2 phút nhé"). Các lần sau chạy ngay.
 - Windows có sẵn bản cài đặt sẵn cho mọi thư viện cần thiết (pycairo, manimpango, PyAV), **không cần cài ffmpeg riêng, không cần Visual Studio**.
+- **Lưu ý Windows**: Các biến môi trường `UV_SYSTEM_CERTS=1`, `UV_PYTHON_DOWNLOADS=never`, `UV_NO_MANAGED_PYTHON=1` giúp `uv` dùng Python 3.12 chính thức đã ký từ python.org. Kiểm tra: `uv python find 3.12` phải in ra đường dẫn dưới `AppData\Local\Programs\Python\Python312`.
 - Nếu `uv` không chạy → làm theo skill `cai-dat`.
 - **Máy Mac (người quản lý thử nghiệm)**: cần cài một lần `brew install pkg-config cairo pango`.
 - **Công thức toán dạng LaTeX (MathTex/Tex) cần cài MiKTeX — KHÔNG bắt buộc**, mặc định không dùng. Công thức đơn giản viết bằng chữ thường: `chu("S = π × r²")`, `chu("(a + b)² = a² + 2ab + b²")` (dùng ký tự ², ³, ×, ÷, √, π, ≈, ≠, ≤, ≥, →). Chỉ khi cần phân số/căn/tích phân đẹp mới hỏi người dùng cài MiKTeX (miễn phí, ~300 MB); lúc đó mới được dùng `MathTex`.
@@ -92,6 +93,17 @@ Video Manim không có tiếng. Muốn có tiếng:
 | `ModuleNotFoundError: nen_tang` | Dòng `sys.path.insert` sai đường dẫn tới thư mục skill |
 | File `.mp4` đang mở/khóa | Nhờ người dùng đóng trình phát video rồi chạy lại (kết quả tự đổi tên, không ghi đè) |
 | Dòng lệnh quá chậm | Dùng `--xem-truoc`; giảm số `self.play` / thời lượng `wait` |
+
+### Lỗi trên Windows (Smart App Control, diệt virus)
+- **Lỗi chứng chỉ khi tải thư viện (`uv run --with ...`)** (`CERTIFICATE_VERIFY_FAILED`, `UnknownIssuer`): Do trình diệt virus (như Avast) quét HTTPS. Đảm bảo biến `UV_SYSTEM_CERTS=1` đã được thiết lập. Tạm đặt trong PowerShell hiện tại: `$env:UV_SYSTEM_CERTS='1'` rồi thử lại. Biện pháp cuối: nhờ người dùng tạm dừng "Web Shield / Quét HTTPS" của diệt virus chỉ trong lúc tải.
+- **Lỗi 4551 / "Application Control policy has blocked this file"**:
+  - Do Smart App Control chặn bản Python chưa ký số do uv tự tải về.
+  - Cách xử lý: Cài bản Python 3.12 chính thức từ python.org (đã có chữ ký số) và đảm bảo các biến `UV_NO_MANAGED_PYTHON=1`, `UV_PYTHON_DOWNLOADS=never`. Kiểm tra:
+    ```powershell
+    uv python find 3.12
+    ```
+    Kết quả phải in ra đường dẫn dưới `AppData\Local\Programs\Python\Python312`.
+  - **Tuyệt đối không** khuyên người dùng tắt Smart App Control (không thể bật lại nếu không cài lại Windows).
 
 ## Lưu ý
 - Chữ chỉ dùng font Be Vietnam Pro (hàm `chu` lo sẵn). Không đưa dữ liệu Đỏ (SĐT, số tài khoản khách) lên video công khai.

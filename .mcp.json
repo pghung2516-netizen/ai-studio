@@ -5,6 +5,7 @@
       "args": ["--python", "3.12", "mcp-for-blender==2.2.8"],
       "env": {
         "DISABLE_TELEMETRY": "true",
+        "UV_SYSTEM_CERTS": "1",
         "BLENDER_MCP_SAFE_MODE": "1"
       }
     }

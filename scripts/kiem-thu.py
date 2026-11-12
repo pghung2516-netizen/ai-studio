@@ -87,6 +87,11 @@ def tao_mau() -> dict[str, Path]:
             subprocess.run(["say", "-o", str(aiff), loi], capture_output=True, timeout=60)
             if aiff.exists():
                 chay_ffmpeg(["-i", str(aiff), str(wav)])
+            # Một số máy Mac có `say` nhưng chưa tải voice, nên chỉ tạo file rỗng.
+            if not wav.exists() or wav.stat().st_size <= 10000:
+                from urllib.request import urlretrieve
+
+                urlretrieve("https://raw.githubusercontent.com/ggerganov/whisper.cpp/master/samples/jfk.wav", wav)
     except Exception:  # noqa: BLE001
         pass
     if wav.exists() and wav.stat().st_size > 10000:
@@ -154,7 +159,7 @@ def danh_sach_ca(m: dict[str, Path]) -> list[tuple]:
     v, vd, s = str(m["video"]), str(m["video_doc"]), str
     ca = [
         # (tên, args, hàm kiểm tra | None, timeout, xem_mat)
-        ("kiem-tra", ["kiem-tra"], None, 120, False),
+        ("kiem-tra", ["kiem-tra"], None, 300, False),
         ("thong-tin", ["thong-tin", v], None, 60, False),
         ("cat", ["cat", v, "--tu", "0:01", "--den", "0:04"], kt_video(dai=3, tieng=True), 300, False),
         ("ghep", ["ghep", v, vd, "--ti-le", "16:9"], kt_video(dai=13, rong=1920, cao=1080), 300, False),
