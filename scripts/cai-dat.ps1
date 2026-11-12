@@ -1,8 +1,8 @@
-# AI STUDIO - cai dat tu dong cho Windows (khong can quyen Administrator)
+# TTOMORROW STUDIO - cai dat tu dong cho Windows (khong can quyen Administrator)
 # Chay bang cach nhap dup CAI-DAT.bat o thu muc goc.
 # Thong bao viet khong dau de khong bi loi font tren cua so dong lenh Windows.
 
-$TenApp = 'AI Studio'
+$TenApp = 'TTomorrow Studio'
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $Root = Split-Path -Parent $PSScriptRoot
@@ -163,7 +163,7 @@ Write-Host "Thu muc: $Root"
 if ($Root -match 'OneDrive') {
     Write-Host ""
     Write-Host "CANH BAO: thu muc dang nam trong OneDrive. Video nang se bi dong bo len mang, de cham/loi." -ForegroundColor Yellow
-    Write-Host "Nen chep ca thu muc sang C:\AI-Studio roi chay lai file CAI-DAT.bat o do." -ForegroundColor Yellow
+    Write-Host "Nen chep ca thu muc sang C:\TTomorrow-Studio roi chay lai file CAI-DAT.bat o do." -ForegroundColor Yellow
     Write-Host "Nhan Enter de tiep tuc cai o day, hoac dong cua so nay de chuyen thu muc truoc."
     Read-Host | Out-Null
 }
@@ -241,10 +241,10 @@ try {
     if (Test-Path -LiteralPath $loiTatScript -PathType Leaf) {
         & $loiTatScript
     } else {
-        Write-Host "Chua tim thay script tao loi tat. Ban van co the dung MO-AI-STUDIO.bat." -ForegroundColor Yellow
+        Write-Host "Chua tim thay script tao loi tat. Ban van co the dung MO-TTOMORROW-STUDIO.bat." -ForegroundColor Yellow
     }
 } catch {
-    Write-Host "Khong tao duoc loi tat. Ban van co the dung MO-AI-STUDIO.bat." -ForegroundColor Yellow
+    Write-Host "Khong tao duoc loi tat. Ban van co the dung MO-TTOMORROW-STUDIO.bat." -ForegroundColor Yellow
 }
 Write-Host ""
 Write-Host "BUOC TIEP THEO:"

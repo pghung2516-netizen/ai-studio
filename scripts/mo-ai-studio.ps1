@@ -1,7 +1,7 @@
-# AI Studio - launcher for Windows.
+# TTomorrow Studio - launcher for Windows.
 # Console messages use ASCII so they remain readable on older systems.
 
-$TenApp = 'AI Studio'
+$TenApp = 'TTomorrow Studio'
 $ErrorActionPreference = 'Stop'
 $Root = $null
 $GuidePath = $null

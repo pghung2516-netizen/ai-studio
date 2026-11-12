@@ -73,9 +73,9 @@ Mỗi câu dưới đây phải chạy từ máy chưa cài gì thêm (để tes
 
 ### E. Lớp "app" (v1.2): icon, lối tắt, trình mở
 Sau khi `CAI-DAT.bat` chạy xong, kiểm tra và ghi lại kèm ảnh chụp màn hình:
-- Trên Desktop và trong Start Menu có 3 lối tắt: **AI Studio**, **AI Studio - Bỏ file vào đây**, **AI Studio - Thành phẩm**. Icon có đúng không? Tên có dấu có hiển thị đúng không?
-- PowerShell chạy ở chế độ nào? Chạy lệnh `$ExecutionContext.SessionState.LanguageMode` trong cửa sổ PowerShell thường. Nếu ra `ConstrainedLanguage` thì đây là máy bị hạn chế, lúc đó lối tắt thư mục sẽ là file `.url`, và **không có** lối tắt AI Studio.
-- Nhấp đúp **AI Studio**: Claude Desktop có mở không? Có nháy cửa sổ đen không? Lần đầu có mở `HUONG-DAN-NHANH.html` không? Nhấn Ctrl+V xem đường dẫn workspace có nằm sẵn trong clipboard không?
+- Trên Desktop và trong Start Menu có 3 lối tắt: **TTomorrow Studio**, **TTomorrow Studio - Bỏ file vào đây**, **TTomorrow Studio - Thành phẩm**. Icon có đúng không? Tên có dấu có hiển thị đúng không?
+- PowerShell chạy ở chế độ nào? Chạy lệnh `$ExecutionContext.SessionState.LanguageMode` trong cửa sổ PowerShell thường. Nếu ra `ConstrainedLanguage` thì đây là máy bị hạn chế, lúc đó lối tắt thư mục sẽ là file `.url`, và **không có** lối tắt TTomorrow Studio.
+- Nhấp đúp **TTomorrow Studio**: Claude Desktop có mở không? Có nháy cửa sổ đen không? Lần đầu có mở `HUONG-DAN-NHANH.html` không? Nhấn Ctrl+V xem đường dẫn workspace có nằm sẵn trong clipboard không?
 - Máy **chưa cài** Claude Desktop: phải mở trang claude.com/download và trang hướng dẫn.
 
 ## Script kiểm thử làm gì

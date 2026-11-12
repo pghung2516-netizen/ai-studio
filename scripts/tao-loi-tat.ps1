@@ -1,4 +1,4 @@
-﻿$TenApp = 'AI Studio'
+﻿$TenApp = 'TTomorrow Studio'
 # Tao loi tat cho Desktop va Start Menu. Console chi dung ky tu ASCII.
 
 $ErrorActionPreference = 'Stop'
@@ -128,7 +128,7 @@ try {
 
     if ($launcherFallback) {
         Write-Host "Khong tao duoc loi tat mo $TenApp trong che do bao mat nay." -ForegroundColor Yellow
-        Write-Host "Hay dung MO-AI-STUDIO.bat trong thu muc workspace." -ForegroundColor Yellow
+        Write-Host "Hay dung MO-TTOMORROW-STUDIO.bat trong thu muc workspace." -ForegroundColor Yellow
     }
     if ($folderFailure) {
         Write-Host "Khong tao duoc mot so loi tat thu muc." -ForegroundColor Yellow
@@ -136,5 +136,5 @@ try {
         Write-Host "Da tao loi tat tren Desktop va Start Menu." -ForegroundColor Green
     }
 } catch {
-    Write-Host "Khong tao duoc loi tat. Hay dung MO-AI-STUDIO.bat trong thu muc workspace." -ForegroundColor Yellow
+    Write-Host "Khong tao duoc loi tat. Hay dung MO-TTOMORROW-STUDIO.bat trong thu muc workspace." -ForegroundColor Yellow
 }

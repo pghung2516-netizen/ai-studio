@@ -1,4 +1,4 @@
-"""Nền tảng video giải thích (Manim) cho AI Studio.
+"""Nền tảng video giải thích (Manim) cho TTomorrow Studio.
 
 Cung cấp: đăng ký font Be Vietnam Pro, khung 9:16 / 16:9, bảng màu thương hiệu,
 và các khối dựng sẵn (thẻ tiêu đề, danh sách bước, biểu đồ cột, sơ đồ luồng).

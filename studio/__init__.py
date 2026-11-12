@@ -1,4 +1,4 @@
-"""AI Studio - bộ công cụ sửa video/ảnh chạy trên máy, gọi qua Claude Code."""
+"""TTomorrow Studio - bộ công cụ sửa video/ảnh chạy trên máy, gọi qua Claude Code."""
 
 # Dùng kho chứng chỉ của hệ điều hành (kể cả CA do antivirus/công ty cài).
 # Phải thực hiện trước khi Requests/urllib3 hay Hugging Face tạo SSL context.

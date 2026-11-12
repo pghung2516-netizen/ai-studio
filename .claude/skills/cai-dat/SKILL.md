@@ -35,8 +35,8 @@ Người dùng có thể **nhấp đúp `CAI-DAT.bat`** ở thư mục gốc —
 | `UnknownIssuer` / `CERTIFICATE_VERIFY_FAILED` / SSL | Antivirus có thể đang quét HTTPS. Đặt `UV_SYSTEM_CERTS=1` và `NODE_USE_SYSTEM_CA=1`; nếu vẫn lỗi, chỉ tạm tắt Web Shield/HTTPS scanning trong lúc cài rồi bật lại. |
 | Winget báo `0x8a15005e` ở nguồn msstore | Luôn thêm `--source winget` vào lệnh cài. |
 | Timeout / DNS khi `uv sync` / tải mô hình | Kiểm tra kết nối; chỉ đề nghị đổi mạng khi log thật sự báo timeout, DNS hoặc không kết nối được. |
-| `kiem-tra` cảnh báo **OneDrive** | Khuyên người dùng chép cả thư mục sang `C:\AI-Studio` (OneDrive đồng bộ video nặng rất chậm, dễ lỗi). |
-| Đường dẫn quá dài / ký tự lạ | Khuyên đặt workspace ở `C:\AI-Studio` (ngắn, không dấu, không khoảng trắng). |
+| `kiem-tra` cảnh báo **OneDrive** | Khuyên người dùng chép cả thư mục sang `C:\TTomorrow-Studio` (OneDrive đồng bộ video nặng rất chậm, dễ lỗi). |
+| Đường dẫn quá dài / ký tự lạ | Khuyên đặt workspace ở `C:\TTomorrow-Studio` (ngắn, không dấu, không khoảng trắng). |
 | Ổ đĩa đầy | Gợi ý xóa bớt kết quả cũ trong `02-THANH-PHAM` (hỏi trước khi xóa). |
 | Phụ đề/xóa nền chậm lần đầu | Bình thường — đang tải mô hình. Các lần sau nhanh. |
 | Antivirus chặn `uv.exe`/`ffmpeg` | Nhờ người dùng bấm "Allow/Cho phép" trong cảnh báo Windows Security. |

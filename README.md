@@ -1,4 +1,4 @@
-# 🎬 AI Studio — Workspace sửa video, ảnh & viết content bằng Claude
+# 🎬 TTomorrow Studio — Workspace sửa video, ảnh & viết content bằng Claude
 
 Workspace cho **Claude Code** (ứng dụng Claude Desktop → tab Code) giúp người **không biết IT** sửa video, sửa ảnh, làm phụ đề, dựng video từ ảnh, viết prompt ảnh/video AI và viết content mạng xã hội — chỉ bằng cách nói chuyện tiếng Việt.
 
@@ -16,6 +16,6 @@ Workspace cho **Claude Code** (ứng dụng Claude Desktop → tab Code) giúp n
 
 ## Cài đặt nhanh (Windows)
 1. Cài Claude Desktop, đăng nhập.
-2. Tải repo (Code → Download ZIP), giải nén vào `C:\AI-Studio`.
+2. Tải repo (Code → Download ZIP), giải nén vào `C:\TTomorrow-Studio`.
 3. Nhấp đúp `CAI-DAT.bat` (tự cài uv + Python 3.12 + thư viện + mô hình AI, không cần quyền admin).
 4. Claude Desktop → tab **Code** → chọn thư mục → gõ `menu`.
