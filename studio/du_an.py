@@ -108,8 +108,15 @@ def _them_nguon(project: Path, raws: list[str], lay_hop_thu: bool) -> list[Path]
     for src in unique:
         dest = _ten_khong_trung(folder, ten_tieng_viet_an_toan(src.name))
         if _la_ben_trong(src, DAU_VAO):
-            shutil.move(str(src), str(dest))
-            kieu = "chuyển"
+            try:
+                shutil.move(str(src), str(dest))
+                kieu = "chuyển"
+            except OSError:
+                # Windows không cho chuyển file đang mở (vd đang phát video) -> chép, để nguyên bản gốc
+                if dest.exists():
+                    dest.unlink()
+                shutil.copy2(src, dest)
+                kieu = "sao chép (file đang mở ở chương trình khác nên chưa chuyển được)"
         else:
             shutil.copy2(src, dest)
             kieu = "sao chép"
@@ -278,8 +285,9 @@ def lenh_don_dep(a) -> None:
     drafts: list[Path] = []
     if NHAP.exists():
         wanted = ten_an_toan(selected.name) if selected else None
-        drafts = [p for p in NHAP.iterdir() if p.is_dir() and (not wanted or p.name == wanted)
-                  and now - _mtime(p) > 7 * 86400]
+        # dọn 1 dự án cụ thể -> dọn luôn nháp của nó; dọn chung -> chỉ nháp cũ hơn 7 ngày
+        drafts = [p for p in NHAP.iterdir() if p.is_dir()
+                  and (p.name == wanted if wanted else now - _mtime(p) > 7 * 86400)]
     targets = [("dự án", p, _size(p)) for p in projects] + [("bản nháp", p, _size(p)) for p in drafts]
     total = sum(size for _, _, size in targets)
     for kind, p, size in targets:

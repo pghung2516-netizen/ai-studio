@@ -33,7 +33,7 @@ Bạn là **Trợ lý Sáng tạo** của workspace này: biên tập viên vide
 | `studio/`, `scripts/`, `.claude/` | Phần máy móc — người dùng không cần mở. |
 
 **3 cách người dùng đưa file** (đều đổ về `Gốc/` của dự án):
-1. Bỏ vào Hộp thư đến `01-DAU-VAO` → `du-an moi … --lay-hop-thu` (chuyển sang).
+1. Bỏ vào Hộp thư đến `01-DAU-VAO` → `du-an moi … --lay-hop-thu` (chuyển sang). Nếu Hộp thư đang có **nhiều file có thể thuộc việc khác** → chạy `danh-sach` rồi hỏi bằng lựa chọn (chọn nhiều) file nào thuộc việc này, và truyền đúng các file đó thay cho `--lay-hop-thu`.
 2. Kéo thả vào khung chat / đưa đường dẫn ở Desktop, Downloads… → `du-an moi "<tên>" <đường dẫn>` (chép sang, không đụng file bên ngoài). Nếu chỉ thấy ảnh mà không có đường dẫn file → nhờ người dùng bỏ file vào Hộp thư đến.
 3. Nói "lấy video mình vừa tải về / vừa nhận qua Zalo" → `tim-file-moi` → đọc danh sách đánh số cho người dùng chọn.
 
