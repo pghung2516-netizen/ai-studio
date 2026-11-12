@@ -24,6 +24,26 @@
       "PowerShell(Start-Process *)",
       "PowerShell(explorer *)",
       "PowerShell(Get-ChildItem *)",
+      "Bash(uv run python scripts/kiem-thu.py*)",
+      "PowerShell(uv run python scripts/kiem-thu.py*)",
+      "Bash(node .claude/skills/video-dong-html/video-dong-html.mjs *)",
+      "PowerShell(node .claude/skills/video-dong-html/video-dong-html.mjs *)",
+      "PowerShell(node .claude\\skills\\video-dong-html\\video-dong-html.mjs *)",
+      "Bash(npm install hyperframes@0.9.39 gsap@3.15.1 three@0.160.0 ffmpeg-static@5.3.0 ffprobe-static@3.1.0)",
+      "PowerShell(npm install hyperframes@0.9.39 gsap@3.15.1 three@0.160.0 ffmpeg-static@5.3.0 ffprobe-static@3.1.0)",
+      "Bash(npx remotion render *)",
+      "PowerShell(npx remotion render *)",
+      "Bash(node scripts/render-batch.mjs *)",
+      "PowerShell(node scripts/render-batch.mjs *)",
+      "Bash(npm install --no-audit --no-fund)",
+      "PowerShell(npm install --no-audit --no-fund)",
+      "Bash(uv run --no-project --python 3.12 --with manim==0.22.1 *)",
+      "PowerShell(uv run --no-project --python 3.12 --with manim==0.22.1 *)",
+      "PowerShell(winget install OpenJS.NodeJS.LTS*)",
+      "PowerShell(winget install BlenderFoundation.Blender*)",
+      "mcp__blender__get_addon_status",
+      "mcp__blender__get_scene_info",
+      "mcp__blender__look",
       "Read(./**)",
       "Edit(./02-THANH-PHAM/**)",
       "Edit(./03-THUONG-HIEU/**)",
@@ -41,5 +61,6 @@
       "PowerShell(git push *)",
       "PowerShell(Format-*)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": ["blender"]
 }
