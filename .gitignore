@@ -19,6 +19,10 @@ CLAUDE.local.md
 03-THUONG-HIEU/*
 !03-THUONG-HIEU/thuong-hieu.md
 05-CONG-CU-THEM/*/
+# file tạm do Manim/Node sinh ra nếu lỡ chạy trong thư mục skill
+.claude/skills/*/media/
+.claude/skills/**/node_modules/
+.claude/skills/**/out/
 assets/nhac-mau/*
 !assets/nhac-mau/DOC-TOI.txt
 

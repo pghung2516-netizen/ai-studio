@@ -53,6 +53,19 @@ uv run python -m studio <lệnh> --help      # xem tùy chọn chi tiết
 
 Các skill trong `.claude/skills/` hướng dẫn chi tiết từng loại việc — **đọc skill tương ứng trước khi làm**.
 
+## Chọn công cụ dựng video (khi KHÔNG phải sửa video quay sẵn)
+
+| Người dùng muốn | Skill | Công cụ |
+|---|---|---|
+| Sửa video quay thật, ảnh thật | `sua-video`, `sua-anh`, `phu-de` | `studio` (ffmpeg) — luôn ưu tiên, nhẹ nhất |
+| Video từ vài tấm ảnh | `video-tu-anh` | `studio anh-thanh-video` |
+| Video động 1 cái: chữ chạy, intro logo, quảng cáo khuyến mãi, 3D xoay nhẹ | `video-dong-html` | HyperFrames + GSAP + three.js (mặc định cho đồ họa chuyển động) |
+| Nhiều video cùng mẫu từ bảng dữ liệu (mỗi sản phẩm 1 video), mẫu thương hiệu dùng lại | `video-remotion` | Remotion — **nhắc giấy phép 1 lần**: công ty từ 4 người phải mua |
+| Giải thích bằng hoạt hình: sơ đồ, các bước, biểu đồ chạy số, công thức | `video-giai-thich` | Manim |
+| Cảnh 3D thật, ảnh/video sản phẩm 3D xoay 360° | `blender-3d` | Blender qua MCP (cần cài Blender, người dùng bấm "Connect") |
+
+Các công cụ này cần cài thêm ở **lần dùng đầu** (Node.js / Blender, vài trăm MB) — skill tự kiểm tra và hướng dẫn. Báo trước người dùng "lần đầu cần tải thêm khoảng X phút". Video dựng xong vẫn có thể hậu kỳ bằng `studio` (nhạc, phụ đề, logo, nén).
+
 ## Quy tắc vàng
 
 1. **Không đụng file gốc.** Chỉ đọc từ `01-DAU-VAO`; mọi thứ mới ghi vào `02-THANH-PHAM`.

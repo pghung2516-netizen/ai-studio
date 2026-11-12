@@ -21,7 +21,7 @@ studio/                   Bộ lệnh Python: uv run python -m studio <lệnh>
   common.py  video.py  image.py  subtitle.py  doctor.py  cli.py
 pyproject.toml, uv.lock   Thư viện (khóa phiên bản, có sẵn bản Windows)
 .claude/settings.json     Quyền tự động cho lệnh an toàn, chặn sửa 01-DAU-VAO
-.claude/skills/           13 skill tiếng Việt + 3 skill Anthropic
+.claude/skills/           17 skill tiếng Việt + 3 skill Anthropic
 01..05-*/                 Thư mục làm việc của người dùng
 assets/fonts/             Be Vietnam Pro (OFL) - font hiển thị đúng tiếng Việt
 ```
@@ -41,6 +41,10 @@ assets/fonts/             Be Vietnam Pro (OFL) - font hiển thị đúng tiến
 | `thuong-hieu` | Thiết lập bộ nhận diện |
 | `capcut-cat-thong-minh` | Cắt khoảng lặng/câu lặp trong dự án CapCut (thử nghiệm) |
 | `them-cong-cu` | **Dành cho bạn**: tích hợp repo/công cụ mới |
+| `video-dong-html` | Video động HTML (HyperFrames + GSAP + three.js), cài ở `05-CONG-CU-THEM/hyperframes/` |
+| `video-remotion` | Hàng loạt video từ bảng dữ liệu (Remotion), cài ở `05-CONG-CU-THEM/remotion/` — giấy phép có điều kiện |
+| `video-giai-thich` | Hoạt hình giải thích (Manim 0.22.1, chạy qua `uv run --with`, không thêm vào pyproject) |
+| `blender-3d` | Dựng 3D qua Blender MCP (mcp-for-blender 2.2.8, add-on kèm trong skill) |
 | `canvas-design`, `slack-gif-creator`, `skill-creator` | Skill gốc của Anthropic (Apache-2.0) |
 
 ## 4. Thêm repo / công cụ mới
@@ -70,3 +74,5 @@ Quy trình test trên Windows và gửi kết quả về Mac qua GitHub Issue: x
 
 ## Lịch sử thay đổi
 - v1.0 — bản đầu tiên.
+- v1.1 (2026-11-13) — thêm 4 skill dựng video không cần quay: `video-dong-html` (HyperFrames/GSAP/three.js), `video-remotion`, `video-giai-thich` (Manim), `blender-3d` (Blender MCP). Bảng chọn công cụ trong CLAUDE.md, menu mới. Đã render thử trên Mac (chưa test Windows; `blender-3d` chưa test với Blender thật).
+  - Còn chờ người quản lý duyệt: quyền tự chạy lệnh trong `.claude/settings.json` và file `.mcp.json` cho Blender (Claude không được tự sửa file cấu hình).

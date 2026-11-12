@@ -62,5 +62,14 @@ gh issue view <số> --comments
 3. `gh issue comment <số> --body "Đã sửa ở <commit>: <tóm tắt>. Test lại: uv run python scripts/kiem-thu.py <ca>"`
 4. Ghi vào "Lịch sử thay đổi" trong HUONG-DAN-QUAN-LY.md nếu là sửa đáng kể.
 
+### D. Công cụ dựng video mới (v1.1) — test bằng hội thoại trong phiên Claude mới
+Mỗi câu dưới đây phải chạy từ máy chưa cài gì thêm (để test luôn bước tự cài Node/Manim). Ghi lại: thời gian cài lần đầu, dung lượng, lỗi, và **xem ảnh khung hình** xem dấu tiếng Việt có đúng không.
+| Skill | Câu nói thử | Điểm dễ lỗi trên Windows |
+|---|---|---|
+| `video-dong-html` | "làm video chữ chạy giảm giá 50% chỉ hôm nay, dọc TikTok" | đường dẫn ffprobe-static theo win32/x64; tìm Chrome |
+| `video-remotion` | "làm 2 video sản phẩm từ bảng giá mẫu" | tải Chrome Headless Shell (antivirus chặn?); `npx` trong PowerShell |
+| `video-giai-thich` | "làm video hoạt hình 3 bước đặt hàng, dọc" | `manimpango.register_font` với font trong đường dẫn có dấu |
+| `blender-3d` | (cần cài Blender) "dựng ảnh 3D hộp quà màu đỏ" | `cmd /c uvx` trong `.mcp.json`; add-on "Install from Disk" trên Blender 4.2+ |
+
 ## Script kiểm thử làm gì
 `scripts/kiem-thu.py` tự tạo file mẫu trong `.cache\kiem-thu\Mẫu thử có dấu\` (video ngang/dọc, nhạc, ảnh, logo, phụ đề tiếng Việt, giọng nói TTS tiếng Anh), chạy ~33 ca phủ mọi lệnh `studio`, kiểm tra mã thoát + độ dài + khung hình + có/không tiếng, rồi xuất `BAO-CAO.md` (gọn, chỉ in 15 dòng cuối của ca lỗi) và `_XEM-MAT.jpg`. Kết quả nằm trong `.cache\` (không lên git, không làm rối `02-THANH-PHAM`).

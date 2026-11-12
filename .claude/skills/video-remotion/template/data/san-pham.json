@@ -1,0 +1,20 @@
+[
+  {
+    "ten-file": "ao-thun-basic",
+    "name": "Áo thun cotton basic",
+    "price": "199.000đ",
+    "oldPrice": "299.000đ",
+    "tagline": "Mềm mát - Form chuẩn",
+    "cta": "Mua ngay",
+    "image": ""
+  },
+  {
+    "ten-file": "quan-jean-ong-rong",
+    "name": "Quần jean ống rộng",
+    "price": "359.000đ",
+    "oldPrice": "459.000đ",
+    "tagline": "Tôn dáng - Không nhăn",
+    "cta": "Đặt hàng ngay",
+    "image": ""
+  }
+]

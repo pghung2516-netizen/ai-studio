@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="vi" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <!-- Thư viện chép sẵn trong thư mục vendor/ (chạy offline, không cần mạng) -->
+    <script src="./vendor/gsap.min.js"></script>
+    <script src="./vendor/three.min.js"></script>
+    <style>
+      /* Chỉ dùng font Be Vietnam Pro (chép từ assets/fonts vào ./fonts) để không lỗi dấu */
+      @font-face { font-family: "BeVN"; font-weight: 400; src: url("./fonts/BeVietnamPro-Regular.ttf"); }
+      @font-face { font-family: "BeVN"; font-weight: 600; src: url("./fonts/BeVietnamPro-SemiBold.ttf"); }
+      @font-face { font-family: "BeVN"; font-weight: 700; src: url("./fonts/BeVietnamPro-Bold.ttf"); }
+      @font-face { font-family: "BeVN"; font-weight: 800; src: url("./fonts/BeVietnamPro-ExtraBold.ttf"); }
+
+      /* ===== MÀU - đổi theo thương hiệu ===== */
+      :root {
+        --nen-1: #1b0b3a;   /* nền đậm */
+        --nen-2: #5b21b6;   /* nền sáng */
+        --nhan: #ffd23f;    /* màu nhấn (chữ to, nút) */
+        --chu: #ffffff;     /* màu chữ */
+        --chu-nut: #1b0b3a; /* chữ trên nút */
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--nen-1); }
+      #root {
+        position: relative; width: 1080px; height: 1920px; overflow: hidden;
+        font-family: "BeVN", sans-serif; color: var(--chu);
+        background: linear-gradient(160deg, var(--nen-2) 0%, var(--nen-1) 70%);
+      }
+      .glow { position: absolute; border-radius: 50%; background: var(--nhan); filter: blur(120px); opacity: 0; }
+      #glow1 { width: 700px; height: 700px; left: -250px; top: 250px; }
+      #glow2 { width: 600px; height: 600px; right: -220px; top: 1100px; }
+      #logo { position: absolute; top: 90px; left: 50%; height: 120px; transform: translateX(-50%); opacity: 0; display: none; }
+      #ten-shop { position: absolute; top: 110px; width: 100%; text-align: center; font-size: 44px; font-weight: 700; letter-spacing: 6px; opacity: 0; }
+      #tren { position: absolute; top: 260px; width: 100%; text-align: center; font-size: 78px; font-weight: 800; line-height: 1.15; }
+      #tren .ky-tu { display: inline-block; white-space: pre; }
+      #so-to { position: absolute; top: 360px; width: 100%; text-align: center; font-size: 330px; font-weight: 800; line-height: 1; color: var(--nhan); opacity: 0; }
+      #khung3d { position: absolute; left: 90px; top: 760px; width: 900px; height: 700px; }
+      #khung3d canvas { width: 900px; height: 700px; display: block; }
+      #duoi { position: absolute; top: 1500px; width: 100%; text-align: center; font-size: 96px; font-weight: 800; opacity: 0; }
+      #phu { position: absolute; top: 1630px; width: 100%; text-align: center; font-size: 42px; font-weight: 400; opacity: 0; }
+      #nut {
+        position: absolute; top: 1720px; left: 50%; margin-left: -250px; width: 500px; height: 110px; border-radius: 55px;
+        background: var(--nhan); color: var(--chu-nut); font-size: 52px; font-weight: 800;
+        display: flex; align-items: center; justify-content: center; opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="8" data-width="1080" data-height="1920" data-fps="30">
+      <div class="glow" id="glow1"></div>
+      <div class="glow" id="glow2"></div>
+      <img id="logo" alt="" />
+      <div id="ten-shop"></div>
+      <div id="tren"></div>
+      <div id="so-to"></div>
+      <div id="khung3d"></div>
+      <div id="duoi"></div>
+      <div id="phu"></div>
+      <div id="nut"></div>
+    </div>
+
+    <script>
+      /* ===== NỘI DUNG - Claude chỉ cần sửa khối này ===== */
+      const CFG = {
+        tenShop: "",                       // vd "SHOP HOA XINH" (để trống = ẩn)
+        logo: "",                          // vd "assets/logo.png" (chép logo vào thư mục dự án; để trống = ẩn)
+        dongTren: "Giảm giá",              // dòng nhỏ phía trên
+        soTo: "50%",                       // con số / cụm chữ to
+        dongDuoi: "Chỉ hôm nay!",          // dòng lớn phía dưới
+        dongPhu: "Số lượng có hạn - Nhanh tay nhé",
+        nut: "MUA NGAY",                   // để trống = ẩn nút
+        anhSanPham: "",                    // vd "assets/san-pham.png" - dán lên hộp 3D (để trống = hộp màu trơn)
+        mauHop: "#ffd23f",                 // màu hộp 3D khi không có ảnh
+        hien3D: true                       // false = không dùng hộp 3D
+      };
+
+      /* ===== PHẦN DƯỚI: thường không cần sửa ===== */
+      const $ = (id) => document.getElementById(id);
+      $("ten-shop").textContent = CFG.tenShop;
+      $("so-to").textContent = CFG.soTo;
+      $("duoi").textContent = CFG.dongDuoi;
+      $("phu").textContent = CFG.dongPhu;
+      $("nut").textContent = CFG.nut;
+      if (!CFG.nut) $("nut").style.display = "none";
+      if (CFG.logo) { $("logo").src = CFG.logo; $("logo").style.display = "block"; }
+      // tách từng chữ cái cho hiệu ứng chạy chữ (giữ nguyên dấu tiếng Việt)
+      Array.from(CFG.dongTren).forEach((c) => {
+        const s = document.createElement("span"); s.className = "ky-tu"; s.textContent = c; $("tren").appendChild(s);
+      });
+
+      // ---- three.js: hộp 3D xoay, vẽ theo thời gian của timeline (render ra đúng từng khung hình) ----
+      const spin = { t: 0, s: 0 };
+      let draw = () => {};
+      if (CFG.hien3D && window.THREE) {
+        const W = 900, H = 700;
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
+        renderer.setPixelRatio(1); renderer.setSize(W, H, false); renderer.setClearColor(0x000000, 0);
+        $("khung3d").appendChild(renderer.domElement);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(35, W / H, 0.1, 50); camera.position.set(0, 0.6, 6.2); camera.lookAt(0, 0, 0);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+        const dir = new THREE.DirectionalLight(0xffffff, 1.4); dir.position.set(3, 4, 5); scene.add(dir);
+        const matOpts = { color: CFG.anhSanPham ? 0xffffff : new THREE.Color(CFG.mauHop), roughness: 0.35, metalness: 0.15 };
+        const mat = new THREE.MeshStandardMaterial(matOpts);
+        if (CFG.anhSanPham) new THREE.TextureLoader().load(CFG.anhSanPham, (tex) => { mat.map = tex; mat.needsUpdate = true; draw(); });
+        const box = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.2, 2.2), mat); scene.add(box);
+        box.add(new THREE.LineSegments(new THREE.EdgesGeometry(box.geometry), new THREE.LineBasicMaterial({ color: 0xffffff })));
+        draw = () => {
+          box.rotation.y = spin.t * 1.1; box.rotation.x = 0.35 + Math.sin(spin.t * 1.3) * 0.15;
+          box.position.y = Math.sin(spin.t * 2) * 0.12;
+          box.scale.setScalar(Math.max(spin.s, 0.0001));
+          renderer.render(scene, camera);
+        };
+        draw();
+      }
+
+      // ---- GSAP: toàn bộ chuyển động nằm trên MỘT timeline duy nhất (8 giây) ----
+      const tl = gsap.timeline({ paused: true });
+      tl.to(["#glow1", "#glow2"], { opacity: 0.35, duration: 1.2, ease: "power2.out" }, 0);
+      tl.to("#glow1", { x: 120, y: 80, duration: 8, ease: "none" }, 0);
+      tl.to("#glow2", { x: -120, y: -80, duration: 8, ease: "none" }, 0);
+      tl.fromTo(["#logo", "#ten-shop"], { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.2);
+      tl.fromTo(".ky-tu", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(2)", stagger: 0.06 }, 0.6);
+      tl.fromTo("#so-to", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.9, ease: "back.out(1.8)" }, 1.3);
+      tl.to("#so-to", { scale: 1.06, duration: 0.5, yoyo: true, repeat: 7, ease: "sine.inOut" }, 2.4);
+      tl.to(spin, { t: 8, duration: 8, ease: "none", onUpdate: draw }, 0);
+      tl.to(spin, { s: 1, duration: 1.1, ease: "power3.out", onUpdate: draw }, 1.8);
+      tl.fromTo("#duoi", { opacity: 0, x: -200 }, { opacity: 1, x: 0, duration: 0.7, ease: "power3.out" }, 3.0);
+      tl.fromTo("#phu", { opacity: 0, y: 30 }, { opacity: 0.9, y: 0, duration: 0.6, ease: "power2.out" }, 3.6);
+      tl.fromTo("#nut", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2.2)" }, 4.3);
+      tl.to("#nut", { scale: 1.08, duration: 0.45, yoyo: true, repeat: 5, ease: "sine.inOut" }, 5.0);
+      tl.to(["#ten-shop", "#logo", "#tren", "#so-to", "#khung3d", "#duoi", "#phu", "#nut"], { opacity: 0, duration: 0.4, ease: "power1.in" }, 7.6);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

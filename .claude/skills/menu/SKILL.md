@@ -26,6 +26,10 @@ Chào bạn 👋 Mình là trợ lý sáng tạo. Bạn chỉ cần nói việc 
   • "Chèn chữ khuyến mãi lên ảnh"          • "Ghép ảnh trước – sau"
 ✨ ẢNH & VIDEO TỪ ẢNH
   • "Làm video TikTok từ 5 tấm ảnh này"    • "Thiết kế poster / ảnh bìa"
+🎞️ VIDEO KHÔNG CẦN QUAY
+  • "Làm video chữ chạy khuyến mãi 10 giây" • "Làm intro logo"
+  • "20 sản phẩm làm 20 video từ bảng giá"  • "Video hoạt hình giải thích 3 bước đặt hàng"
+  • "Biểu đồ doanh thu chạy số"             • "Dựng ảnh 3D hộp sản phẩm / xoay 360°"
 🤖 AI TẠO ẢNH / VIDEO
   • "Viết prompt để Gemini/ChatGPT tạo ảnh quảng cáo"
   • "Viết prompt Veo tạo video người mẫu mặc áo"
@@ -42,4 +46,4 @@ Chào bạn 👋 Mình là trợ lý sáng tạo. Bạn chỉ cần nói việc 
 
 3. Nếu `01-DAU-VAO` đã có file → thêm 1 dòng: "Mình thấy bạn có sẵn [số] video/ảnh, ví dụ `tên-file`. Bạn muốn làm gì với chúng?"
 4. Nếu bộ thương hiệu còn trống → thêm 1 dòng: "💡 Mẹo: dành 5 phút cho mình biết về shop/thương hiệu của bạn, content và thiết kế sẽ đúng 'chất' hơn. Gõ: **thiết lập thương hiệu**."
-5. Nếu thư mục `05-CONG-CU-THEM/DANH-SACH.md` có công cụ đã đăng ký → liệt kê thêm mục "🧩 CÔNG CỤ THÊM" với tên + 1 câu mô tả mỗi công cụ.
+5. Nếu `05-CONG-CU-THEM/DANH-SACH.md` có công cụ đã đăng ký **ngoài** 4 công cụ đã nằm trong mục 🎞️ (HyperFrames, Remotion, Manim, Blender) → liệt kê thêm mục "🧩 CÔNG CỤ THÊM" với tên + 1 câu mô tả mỗi công cụ.
