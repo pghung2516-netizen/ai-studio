@@ -212,6 +212,25 @@ def tao_parser() -> argparse.ArgumentParser:
     p.add_argument("anh")
     p.add_argument("--sang", default="jpg", choices=["jpg", "png", "webp"])
 
+    # --- OpenMontage (công cụ thêm, tải khi cần)
+    from . import openmontage
+
+    p_om = sub.add_parser("openmontage", help="Công cụ thêm OpenMontage: cắt video dài thành clip ngắn, video người nói, video theo mẫu",
+                          description="Công cụ thêm OpenMontage (tải ở lần dùng đầu)")
+    om_sub = p_om.add_subparsers(dest="lenh_om", metavar="<cai | trang-thai | cong-cu | chay>")
+    p = om_sub.add_parser("cai", help="Tải và cài OpenMontage (lần đầu ~5-10 phút)")
+    p.add_argument("--cai-lai", action="store_true", help="tải lại từ đầu")
+    p.set_defaults(ham=openmontage.lenh_cai)
+    p = om_sub.add_parser("trang-thai", help="Xem đã cài chưa, công cụ nào dùng được")
+    p.set_defaults(ham=openmontage.lenh_trang_thai)
+    p = om_sub.add_parser("cong-cu", help="Chạy 1 công cụ offline của OpenMontage với tham số JSON")
+    p.add_argument("ten", help="tên công cụ, ví dụ silence_cutter")
+    p.add_argument("json", nargs="?", default="{}", help="tham số dạng JSON, file vào tìm trong Gốc của dự án")
+    p.set_defaults(ham=openmontage.lenh_cong_cu)
+    p = om_sub.add_parser("chay", help="Chạy python trong môi trường OpenMontage", prefix_chars="\0")
+    p.add_argument("tham_so", nargs=argparse.REMAINDER)
+    p.set_defaults(ham=openmontage.lenh_chay)
+
     # --- CapCut
     p = L("capcut-sao-luu", doctor.lenh_capcut_sao_luu, "Sao lưu 1 dự án CapCut trước khi cho Claude sửa")
     p.add_argument("du_an", help="tên (hoặc 1 phần tên) dự án CapCut")

@@ -89,5 +89,11 @@ Sau khi `CAI-DAT.bat` chạy xong, kiểm tra và ghi lại kèm ảnh chụp m�
 - **Làm tiếp ở phiên mới:** mở phiên Claude mới, nói "làm tiếp dự án áo thun" → Claude đọc nhật ký và biết đã làm gì.
 - **Dọn dẹp:** nói "dọn dự án cũ" → Claude phải báo cáo trước và **hỏi** trước khi chuyển vào Thùng rác.
 
+### G. OpenMontage (v1.4) — test bằng hội thoại
+- Nói "cắt video này thành mấy clip TikTok" với 1 video nói chuyện dài 3–10 phút. Lần đầu Claude phải báo trước rồi tự chạy `studio openmontage cai`. Ghi lại: thời gian cài, dung lượng, có bị Smart App Control / antivirus chặn `ffprobe.exe` / `ffmpeg.exe` trong `05-CONG-CU-THEM\openmontage\_bin` không.
+- Claude phải đưa danh sách đoạn đề xuất để **chọn nhiều** bằng nút bấm. Clip ra có khung dọc, mặt người ở giữa, phụ đề đúng dấu.
+- Nói "bỏ khoảng lặng video này" → có bản ngắn hơn, không bị hụt chữ đầu câu.
+- Nói "làm video giống video mẫu này" với 1 video đã lưu về máy → có phần tóm tắt nhịp/cảnh bằng lời thường + 2–3 hướng làm.
+
 ## Script kiểm thử làm gì
-`scripts/kiem-thu.py` tự tạo file mẫu trong `.cache\kiem-thu\Mẫu thử có dấu\` (video ngang/dọc, nhạc, ảnh, logo, phụ đề tiếng Việt, giọng nói TTS tiếng Anh), chạy ~33 ca phủ mọi lệnh `studio`, kiểm tra mã thoát + độ dài + khung hình + có/không tiếng, rồi xuất `BAO-CAO.md` (gọn, chỉ in 15 dòng cuối của ca lỗi) và `_XEM-MAT.jpg`. Kết quả nằm trong `.cache\` (không lên git, không làm rối `02-THANH-PHAM`).
+`scripts/kiem-thu.py` tự tạo file mẫu trong `.cache\kiem-thu\Mẫu thử có dấu\` (video ngang/dọc, nhạc, ảnh, logo, phụ đề tiếng Việt, giọng nói TTS tiếng Anh), chạy ~46 ca phủ mọi lệnh `studio`, kiểm tra mã thoát + độ dài + khung hình + có/không tiếng, rồi xuất `BAO-CAO.md` (gọn, chỉ in 15 dòng cuối của ca lỗi) và `_XEM-MAT.jpg`. Kết quả nằm trong `.cache\` (không lên git, không làm rối `02-THANH-PHAM`).

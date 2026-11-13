@@ -266,6 +266,9 @@ def danh_sach_ca(m: dict[str, Path]) -> list[tuple]:
          kt_tim_file_moi, 60, False, tao_file_moi),
         ("don-dep-dry-run", ["don-dep", "--du-an", "ao thun trang"], None, 60, False),
         ("du-an-ten-mo-ho (mong đợi mã 2)", ["du-an", "xem", "ao thun"], "MA2", 60, False),
+        ("openmontage-trang-thai", ["openmontage", "trang-thai"], None, 120, False),
+        ("openmontage-chan-link (mong đợi mã 2)",
+         ["openmontage", "cong-cu", "video_analyzer", '{"source": "https://example.com/v.mp4"}'], "MA2", 120, False),
     ]
     if "giong" in m:
         ca.append(("phu-de-nghe (tiếng Anh)", ["phu-de", s(m["giong"]), "--ngon-ngu", "en", "--mo-hinh", "nhanh"],

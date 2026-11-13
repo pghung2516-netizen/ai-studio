@@ -19,6 +19,8 @@ Chào bạn 👋 Mình là trợ lý sáng tạo. Bạn chỉ cần nói việc 
   • "Cắt lấy đoạn từ giây 10 đến 40"      • "Ghép 3 video này lại"
   • "Đổi sang video dọc cho TikTok"        • "Thêm nhạc nền / logo / chữ"
   • "Nén nhẹ để gửi Zalo"                  • "Làm GIF từ đoạn này"
+  • "Cắt livestream thành 5 clip TikTok"   • "Bỏ khoảng lặng video nói chuyện"
+  • "Làm video giống video mẫu này"
 💬 PHỤ ĐỀ
   • "Làm phụ đề tiếng Việt cho video"      • "Chép lời video thành văn bản"
 🖼️ ẢNH
@@ -53,4 +55,4 @@ Chào bạn 👋 Mình là trợ lý sáng tạo. Bạn chỉ cần nói việc 
 
 3. Nếu `01-DAU-VAO` đã có file → thêm 1 dòng: "Mình thấy trong Hộp thư đến đang có [số] file, ví dụ `tên-file`. Bạn muốn bắt đầu dự án mới với file này không?"
 4. Nếu bộ thương hiệu còn trống → thêm 1 dòng: "💡 Mẹo: dành 5 phút cho mình biết về shop/thương hiệu của bạn, content và thiết kế sẽ đúng 'chất' hơn. Gõ: **thiết lập thương hiệu**."
-5. Nếu `05-CONG-CU-THEM/DANH-SACH.md` có công cụ đã đăng ký **ngoài** 4 công cụ đã nằm trong mục 🎞️ (HyperFrames, Remotion, Manim, Blender) → liệt kê thêm mục "🧩 CÔNG CỤ THÊM" với tên + 1 câu mô tả mỗi công cụ.
+5. Nếu `05-CONG-CU-THEM/DANH-SACH.md` có công cụ đã đăng ký **ngoài** các công cụ đã có trong menu (HyperFrames, Remotion, Manim, Blender, OpenMontage) → liệt kê thêm mục "🧩 CÔNG CỤ THÊM" với tên + 1 câu mô tả mỗi công cụ.

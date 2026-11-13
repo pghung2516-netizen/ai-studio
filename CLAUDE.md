@@ -77,6 +77,7 @@ Các skill trong `.claude/skills/` hướng dẫn chi tiết từng loại việ
 | Video động 1 cái: chữ chạy, intro logo, quảng cáo khuyến mãi, 3D xoay nhẹ | `video-dong-html` | HyperFrames + GSAP + three.js (mặc định cho đồ họa chuyển động) |
 | Nhiều video cùng mẫu từ bảng dữ liệu (mỗi sản phẩm 1 video), mẫu thương hiệu dùng lại | `video-remotion` | Remotion — **nhắc giấy phép 1 lần**: công ty từ 4 người phải mua |
 | Giải thích bằng hoạt hình: sơ đồ, các bước, biểu đồ chạy số, công thức | `video-giai-thich` | Manim |
+| Cắt livestream/video dài thành nhiều clip ngắn, làm gọn video người nói (bỏ khoảng lặng, khung dọc bám mặt), học theo video mẫu | `openmontage` | OpenMontage (offline, tải ~700MB lần đầu) + `studio` |
 | Cảnh 3D thật, ảnh/video sản phẩm 3D xoay 360° | `blender-3d` | Blender qua MCP (cần cài Blender, người dùng bấm "Connect") |
 
 Các công cụ này cần cài thêm ở **lần dùng đầu** (Node.js / Blender, vài trăm MB) — skill tự kiểm tra và hướng dẫn. Báo trước người dùng "lần đầu cần tải thêm khoảng X phút". Video dựng xong vẫn có thể hậu kỳ bằng `studio` (nhạc, phụ đề, logo, nén).

@@ -44,6 +44,7 @@ assets/fonts/             Be Vietnam Pro (OFL) - font hiển thị đúng tiến
 | `video-dong-html` | Video động HTML (HyperFrames + GSAP + three.js), cài ở `05-CONG-CU-THEM/hyperframes/` |
 | `video-remotion` | Hàng loạt video từ bảng dữ liệu (Remotion), cài ở `05-CONG-CU-THEM/remotion/` — giấy phép có điều kiện |
 | `video-giai-thich` | Hoạt hình giải thích (Manim 0.22.1, chạy qua `uv run --with`, không thêm vào pyproject) |
+| `openmontage` | Clip ngắn từ video dài, video người nói, học theo video mẫu — OpenMontage (AGPL-3.0) tải khi cần vào `05-CONG-CU-THEM/openmontage/` bằng `studio openmontage cai`, chỉ gọi công cụ offline qua `studio openmontage cong-cu` |
 | `blender-3d` | Dựng 3D qua Blender MCP (mcp-for-blender 2.2.8, add-on kèm trong skill) |
 | `canvas-design`, `slack-gif-creator`, `skill-creator` | Skill gốc của Anthropic (Apache-2.0) |
 
@@ -53,7 +54,7 @@ Công cụ tạo ảnh/video AI chạy trên máy (nếu có) sẽ được ưu 
 
 ## 5. Thử nghiệm trên máy Mac của bạn
 Mọi lệnh `studio` chạy được trên Mac: `uv sync` rồi `uv run python -m studio kiem-tra`. Chỉ `CAI-DAT.bat`/`.ps1` là riêng Windows.
-Kiểm tra toàn bộ sau khi sửa code: `uv run python scripts/kiem-thu.py` (33 ca, ~1 phút, tự tạo file mẫu, báo cáo ở `.cache/kiem-thu/BAO-CAO.md`).
+Kiểm tra toàn bộ sau khi sửa code: `uv run python scripts/kiem-thu.py` (46 ca, ~1–2 phút, tự tạo file mẫu, báo cáo ở `.cache/kiem-thu/BAO-CAO.md`).
 Quy trình test trên Windows và gửi kết quả về Mac qua GitHub Issue: xem **`KIEM-THU.md`**.
 
 ## 6. Cập nhật cho người dùng
@@ -66,6 +67,7 @@ Quy trình test trên Windows và gửi kết quả về Mac qua GitHub Issue: x
 - `canvas-design`, `slack-gif-creator`, `skill-creator` — github.com/anthropics/skills, Apache-2.0 (giữ nguyên `LICENSE.txt` trong từng thư mục).
 - `capcut-cat-thong-minh/scripts` — từ skill cộng đồng "capcut-smartcut" (gói "Bộ sưu tập kỹ năng Claude" trên Drive); đã rà soát mã: không gọi mạng, chỉ đọc/ghi thư mục dự án CapCut; bổ sung bước sao lưu. Tác giả gốc không ghi giấy phép → dùng nội bộ, không bán lại.
 - Thư viện prompt `04-THU-VIEN-PROMPT/` — **viết lại/tóm lược** từ các tài liệu tham khảo (quy trình AI tạo banner, người que, người mẫu bán hàng, nhân vật 3D; bộ 250 visual code; bộ prompt góc máy/ánh sáng/đồng nhất/quảng cáo Veo; prompt Nano Banana). Không chép nguyên văn ebook; ebook/PDF gốc không đưa vào repo.
+- **OpenMontage** (github.com/OpenMontageInc/OpenMontage, AGPL-3.0) — **không** nằm trong repo này; máy người dùng tự tải bản gốc (ghim commit `fecb9a1`) ở lần dùng đầu. Khi cài, `CLAUDE.md`/`AGENTS.md` của nó được đổi tên (`*.goc-openmontage.md`) để không lấn hướng dẫn tiếng Việt của workspace; ngoài ra không sửa mã. Đừng chép mã OpenMontage vào repo này hay bán kèm bản đã sửa.
 - Các skill YouTube dùng dịch vụ Higgsfield (trả phí) trong gói skill Drive **không** đưa vào — có thể thêm sau bằng `them-cong-cu` nếu người dùng có tài khoản Higgsfield.
 
 ## 8. Đã kiểm thử
@@ -92,3 +94,12 @@ Quy trình test trên Windows và gửi kết quả về Mac qua GitHub Issue: x
   - Trình mở ưu tiên **IDE có Claude Code** (Antigravity / VS Code / Cursor) — mở thẳng workspace; chọn bằng `.cache/mo-bang.txt` (`tu-dong` | `ide` | `claude-desktop`). Lối tắt đổi tên: "Hộp thư đến", "Dự án của tôi".
   - Video mẫu Manim: bố cục dọc cân đối, tiêu đề không xuống dòng (helper `bo_cuc_doc()`).
   - Chưa test Windows: mục F trong `KIEM-THU.md`.
+- v1.4 (2026-11-13) — thêm công cụ **OpenMontage** (chỉ phần offline) + skill `openmontage`:
+  - Cắt video dài thành nhiều clip ngắn.
+  - Làm gọn video người nói: bỏ khoảng lặng, khung dọc bám mặt, lọc ồn.
+  - Phân tích video mẫu.
+  - Lệnh mới `studio openmontage cai | trang-thai | cong-cu | chay`.
+  - Cách cài: tải zip theo commit + venv riêng. ffmpeg chép từ imageio-ffmpeg; ffprobe lấy từ ffprobe-static (kiểm tra sha512). Ghim thêm `av<19` vì faster-whisper lỗi với av 19, và cài `opencv-python-headless` để bám mặt.
+  - Đã chạy thử trên Mac: cài ~1 phút / 531MB; nghe tiếng Việt, bỏ khoảng lặng (21,9 → 13,75 giây), khung dọc 1080×1920, phân tích video mẫu, chặn link/công cụ online.
+  - Chưa test: Windows (mục G trong `KIEM-THU.md`), video thật có mặt người.
+
